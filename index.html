@@ -4,10 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MATE 3171 - Tercer Examen Parcial Interactivo | UPRM</title>
+
   <!-- KaTeX para renderizado matemático -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
   <style>
     :root {
       --uprm-green: #0b5d3b;
@@ -40,7 +42,7 @@
       background: var(--bg);
       color: var(--text);
       line-height: 1.55;
-      padding-bottom: 4rem;
+      padding-bottom: 5rem;
     }
 
     /* Barra superior */
@@ -100,14 +102,6 @@
     }
     .btn-primary:hover {
       background: #e2e8f0;
-    }
-
-    .btn-green {
-      background: var(--uprm-green);
-      color: #fff;
-    }
-    .btn-green:hover {
-      background: var(--uprm-green-dark);
     }
 
     .btn-outline {
@@ -346,13 +340,275 @@
       transform: scale(1.1);
     }
 
-    /* Inputs matemáticos */
+    /* ==================== EDITOR VISUAL NATIVO DE ECUACIONES ==================== */
+    .math-editor-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.55rem;
+    }
+
     .math-input-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.55rem;
-      margin-top: 0.65rem;
+      gap: 0.6rem;
+    }
+
+    /* Caja principal donde se arma la ecuación visualmente */
+    .veq-box {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 260px;
+      min-height: 48px;
+      padding: 0.35rem 0.65rem;
+      border: 2px solid #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: text;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      font-size: 1.15rem;
+    }
+
+    .veq-box.short-veq {
+      min-width: 140px;
+    }
+
+    .veq-box:focus-within {
+      border-color: var(--uprm-green);
+      box-shadow: 0 0 0 3px rgba(11, 93, 59, 0.15);
+    }
+
+    .veq-container {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+    }
+
+    /* Slots de texto dentro de la ecuación */
+    input.eq-slot {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      font-size: 1.15rem;
+      color: #0f172a;
+      padding: 0 1px;
+      margin: 0;
+      min-width: 0.6ch;
+      text-align: center;
+    }
+
+    /* Cuando un contenedor interno (raíz, fracción, exponente, valor absoluto) está vacío, muestra cajita punteada */
+    .m-inner-slot > input.eq-slot:only-child:placeholder-shown {
+      min-width: 2.2ch;
+      background: #f1f5f9;
+      border: 1.5px dashed #64748b;
+      border-radius: 4px;
+      padding: 1px 3px;
+    }
+
+    .m-inner-slot > input.eq-slot:focus {
+      background: #e7f3ed !important;
+      border-color: var(--uprm-green) !important;
+    }
+
+    /* Widget: Raíz cuadrada y cúbica */
+    .m-widget {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 1px;
+      user-select: none;
+    }
+
+    .m-radical {
+      display: inline-flex;
+      align-items: stretch;
+      margin: 2px 2px;
+    }
+
+    .m-root-index {
+      font-size: 0.72em;
+      font-weight: 700;
+      line-height: 1;
+      align-self: flex-start;
+      margin-right: -3px;
+      margin-top: 1px;
+      color: #0f172a;
+    }
+
+    .m-rad-symbol {
+      font-size: 1.25em;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      font-family: serif;
+      padding-right: 1px;
+    }
+
+    .m-rad-content {
+      border-top: 2px solid #0f172a;
+      padding: 2px 4px 1px 3px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Widget: Fracción vertical */
+    .m-frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+    }
+
+    .m-frac-num {
+      padding: 1px 5px 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+    }
+
+    .m-frac-bar {
+      width: 100%;
+      height: 2px;
+      background: #0f172a;
+    }
+
+    .m-frac-den {
+      padding: 2px 5px 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+    }
+
+    /* Widget: Valor absoluto */
+    .m-abs {
+      display: inline-flex;
+      align-items: stretch;
+      margin: 0 2px;
+    }
+
+    .m-abs-bar {
+      width: 2px;
+      background: #0f172a;
+      margin: 2px 2px;
+      display: inline-block;
+    }
+
+    .m-abs-content {
+      padding: 1px 3px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Widget: Exponente */
+    .m-sup {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      font-size: 0.78em;
+      margin-top: -6px;
+      margin-left: 1px;
+      margin-right: 1px;
+    }
+
+    .m-sup input.eq-slot {
+      font-size: 0.95rem;
+    }
+
+    /* Widget: Paréntesis o función g(...) */
+    .m-parens {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 1px;
+    }
+
+    .m-paren-char {
+      font-size: 1.15em;
+      font-weight: 500;
+      padding: 0 1px;
+    }
+
+    .m-fn-name {
+      font-style: italic;
+      font-weight: 600;
+      padding-right: 1px;
+    }
+
+    /* Vista previa KaTeX al lado de la caja */
+    .veq-preview {
+      font-size: 0.9rem;
+      color: var(--uprm-green-dark);
+      background: var(--uprm-green-light);
+      border: 1px solid #b7e0cc;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 34px;
+    }
+
+    /* Barra de botones visuales tipo calculadora */
+    .math-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      background: #f1f5f9;
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      width: fit-content;
+    }
+
+    .math-toolbar-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      margin-right: 0.25rem;
+    }
+
+    .mbtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-width: 40px;
+      height: 36px;
+      padding: 0 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      user-select: none;
+    }
+
+    .mbtn:hover {
+      background: var(--uprm-green-light);
+      border-color: var(--uprm-green);
+      color: var(--uprm-green-dark);
+      transform: translateY(-1px);
+    }
+
+    .mbtn:active {
+      transform: translateY(0);
+    }
+
+    .mbtn-action {
+      background: #f8fafc;
+      color: #334155;
+      font-size: 0.8rem;
+      border-color: #cbd5e1;
     }
 
     .math-input {
@@ -360,33 +616,12 @@
       border: 1px solid #94a3b8;
       border-radius: 6px;
       font-size: 0.95rem;
-      font-family: 'Consolas', 'Menlo', monospace;
-      min-width: 220px;
+      min-width: 110px;
     }
 
     .math-input.short {
       min-width: 90px;
       width: 110px;
-    }
-
-    .helper-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-top: 0.45rem;
-    }
-
-    .chip-btn {
-      font-size: 0.78rem;
-      padding: 0.2rem 0.55rem;
-      border-radius: 5px;
-      border: 1px solid #cbd5e1;
-      background: #f8fafc;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .chip-btn:hover {
-      background: #e2e8f0;
     }
 
     /* Retroalimentación y solución */
@@ -456,20 +691,20 @@
 
     .grid-inputs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
       margin-top: 0.5rem;
     }
 
     .field-group {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.35rem;
       font-size: 0.88rem;
     }
 
     .field-group select,
-    .field-group input {
+    .field-group input:not(.eq-slot) {
       padding: 0.45rem 0.6rem;
       border: 1px solid #94a3b8;
       border-radius: 6px;
@@ -491,7 +726,6 @@
       border-radius: 8px;
       background: #ffffff;
       max-width: 100%;
-      cursor: crosshair;
     }
 
     .canvas-caption {
@@ -542,7 +776,7 @@
     }
 
     @media print {
-      .topbar, .q-footer, .helper-chips {
+      .topbar, .q-footer, .math-toolbar {
         display: none !important;
       }
       body {
@@ -616,12 +850,12 @@
       </div>
 
       <div class="instructions-box">
-        <strong>Instrucciones y Temas Evaluados (Secciones 2.1–2.4 y 3.1–3.3):</strong>
+        <strong>Instrucciones y Uso del Editor Visual de Ecuaciones:</strong>
         <ul>
           <li>Dispone de 1 hora y 30 minutos como referencia para responder el examen.</li>
-          <li>Puede verificar cada ejercicio individualmente o pulsar <strong>"Someter Examen Completo"</strong> arriba.</li>
-          <li>Para raíces en los llenablancos puede usar los botones de ayuda: <code>sqrt(x)</code> para $\sqrt{x}$, <code>cbrt(x)</code> para $\sqrt[3]{x}$, y <code>abs(x)</code> o <code>|x|</code> para valor absoluto.</li>
-          <li>En las gráficas interactivas, complete los puntos o parámetros y la gráfica se trazará en el plano cartesiano.</li>
+          <li><strong>Botones de símbolos matemáticos:</strong> Haga clic en cualquiera de los botones debajo de cada caja ($\sqrt{\square}$, $\sqrt[3]{\square}$, $|\square|$, $\tfrac{\square}{\square}$, $x^2$, $x^\square$) para insertar la estructura visual y rellene las cajitas punteadas.</li>
+          <li>Para escribir <strong>fuera</strong> de una raíz, fracción o exponente, pulse el botón <strong>"→ Salir de raíz/fracción"</strong>, haga clic a la derecha del símbolo o presione la flecha derecha ($\rightarrow$).</li>
+          <li>Cada caja muestra al lado una <strong>Vista previa</strong> matemática en tiempo real de lo que está escribiendo.</li>
         </ul>
       </div>
     </section>
@@ -657,7 +891,7 @@
     <section class="part-card">
       <div class="part-header">
         <h3>Parte II. (12 puntos) Llenablancos</h3>
-        <span style="font-size:0.9rem; color:var(--muted);">Escriba la expresión algebraica de la función transformada $g(x)$ (3 puntos cada uno)</span>
+        <span style="font-size:0.9rem; color:var(--muted);">Construya la función transformada $g(x)$ usando los botones visuales (3 puntos cada uno)</span>
       </div>
 
       <div id="fibContainer"></div>
@@ -723,9 +957,23 @@
               </select>
             </div>
           </div>
-          <div class="math-input-row" style="margin-top:0.8rem;">
-            <label><strong>$f(x)$ en términos de $g$:</strong> $f(x) =$</label>
-            <input type="text" id="p1-in-g" class="math-input" placeholder="Ej: -2*g(x+3)+4" />
+
+          <div class="math-editor-wrap" style="margin-top:0.85rem;">
+            <div class="math-input-row">
+              <label><strong>$f(x)$ en términos de $g$:</strong> &nbsp; $f(x) =$</label>
+              <div id="p1-in-g" class="veq-box" data-preview="prev-p1-g"></div>
+              <div class="veq-preview" id="prev-p1-g">Vista previa: --</div>
+            </div>
+            <div class="math-toolbar">
+              <span class="math-toolbar-label">Insertar:</span>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p1-in-g', 'g')">$g(\square)$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p1-in-g', 'x')">$x$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p1-in-g', 'plus')">$+$ </button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p1-in-g', 'minus')">$-$ </button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p1-in-g', 'parens')">$(\square)$</button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqExitWidget('p1-in-g')">→ Salir de ( )</button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p1-in-g')">Limpiar</button>
+            </div>
           </div>
         </div>
 
@@ -864,22 +1112,31 @@
 
         <div class="subq">
           <div class="subq-title">i. (4 puntos) $3z - 2w = a + bi$</div>
-          <div class="math-input-row">
-            <label>Parte real $a =$</label>
-            <input type="text" id="p3-i-a" class="math-input short" placeholder="Ej: 7" />
-            <label>Parte imaginaria $b =$</label>
-            <input type="text" id="p3-i-b" class="math-input short" placeholder="Ej: -14" />
-            <span style="color:var(--muted); font-size:0.88rem;">(de modo que el resultado es $a + bi$)</span>
+          <div class="math-editor-wrap">
+            <div class="math-input-row">
+              <label>Parte real $a =$</label>
+              <div id="p3-i-a" class="veq-box short-veq"></div>
+              <label style="margin-left:0.5rem;">Parte imaginaria $b =$</label>
+              <div id="p3-i-b" class="veq-box short-veq"></div>
+            </div>
           </div>
         </div>
 
         <div class="subq">
-          <div class="subq-title">ii. (4 puntos) $\dfrac{z}{w} = a + bi$ <span style="font-weight:normal; font-size:0.86rem; color:var(--muted);">(Puede escribir fracciones como <code>-5/17</code>)</span></div>
-          <div class="math-input-row">
-            <label>Parte real $a =$</label>
-            <input type="text" id="p3-ii-a" class="math-input short" placeholder="Ej: -5/17" />
-            <label>Parte imaginaria $b =$</label>
-            <input type="text" id="p3-ii-b" class="math-input short" placeholder="Ej: -14/17" />
+          <div class="subq-title">ii. (4 puntos) $\dfrac{z}{w} = a + bi$</div>
+          <div class="math-editor-wrap">
+            <div class="math-input-row">
+              <label>Parte real $a =$</label>
+              <div id="p3-ii-a" class="veq-box short-veq"></div>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p3-ii-a', 'frac')">$\tfrac{\square}{\square}$ en $a$</button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p3-ii-a')">Limpiar $a$</button>
+            </div>
+            <div class="math-input-row" style="margin-top:0.35rem;">
+              <label>Parte imaginaria $b =$</label>
+              <div id="p3-ii-b" class="veq-box short-veq"></div>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p3-ii-b', 'frac')">$\tfrac{\square}{\square}$ en $b$</button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p3-ii-b')">Limpiar $b$</button>
+            </div>
           </div>
         </div>
 
@@ -914,7 +1171,13 @@
           <div class="grid-inputs">
             <div class="field-group">
               <label>Término líder:</label>
-              <input type="text" id="p4-lead" placeholder="Ej: -x^4" />
+              <div id="p4-lead" class="veq-box short-veq"></div>
+              <div class="math-toolbar" style="margin-top:0.25rem;">
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p4-lead', 'minus')">$-$</button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p4-lead', 'x')">$x$</button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p4-lead', 'pow')">$x^\square$</button>
+                <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p4-lead')">Limpiar</button>
+              </div>
             </div>
             <div class="field-group">
               <label>Grado de $P(x)$:</label>
@@ -1020,12 +1283,31 @@
 
         <div class="grid-inputs">
           <div class="field-group">
-            <label>Cociente $Q(x) =$</label>
-            <input type="text" id="p5-q" class="math-input" placeholder="Ej: 2x^2 - 3x - 3" />
+            <label><strong>Cociente $Q(x) =$</strong></label>
+            <div id="p5-q" class="veq-box" data-preview="prev-p5-q"></div>
+            <div class="veq-preview" id="prev-p5-q">Vista previa: --</div>
+            <div class="math-toolbar">
+              <span class="math-toolbar-label">Insertar:</span>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-q', 'sq')">$x^2$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-q', 'pow')">$x^\square$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-q', 'x')">$x$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-q', 'plus')">$+$ </button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-q', 'minus')">$-$ </button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p5-q')">Limpiar</button>
+            </div>
           </div>
           <div class="field-group">
-            <label>Residuo $R(x) =$</label>
-            <input type="text" id="p5-r" class="math-input" placeholder="Ej: 6x + 1" />
+            <label><strong>Residuo $R(x) =$</strong></label>
+            <div id="p5-r" class="veq-box" data-preview="prev-p5-r"></div>
+            <div class="veq-preview" id="prev-p5-r">Vista previa: --</div>
+            <div class="math-toolbar">
+              <span class="math-toolbar-label">Insertar:</span>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-r', 'sq')">$x^2$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-r', 'x')">$x$</button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-r', 'plus')">$+$ </button>
+              <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p5-r', 'minus')">$-$ </button>
+              <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p5-r')">Limpiar</button>
+            </div>
           </div>
         </div>
 
@@ -1060,11 +1342,21 @@
           <div class="subq-title">i. (5 puntos) Use <strong>división sintética</strong> para hallar el cociente $Q(x)$ y el residuo $R$ cuando $f(x)$ se divide por $x - 4$:</div>
           <div class="grid-inputs">
             <div class="field-group">
-              <label>Cociente $Q(x) =$</label>
-              <input type="text" id="p6-q" class="math-input" placeholder="Ej: x^2 + 1" />
+              <label><strong>Cociente $Q(x) =$</strong></label>
+              <div id="p6-q" class="veq-box" data-preview="prev-p6-q"></div>
+              <div class="veq-preview" id="prev-p6-q">Vista previa: --</div>
+              <div class="math-toolbar">
+                <span class="math-toolbar-label">Insertar:</span>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p6-q', 'sq')">$x^2$</button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p6-q', 'pow')">$x^\square$</button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p6-q', 'x')">$x$</button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p6-q', 'plus')">$+$ </button>
+                <button type="button" class="mbtn" onmousedown="event.preventDefault()" onclick="veqInsert('p6-q', 'minus')">$-$ </button>
+                <button type="button" class="mbtn mbtn-action" onmousedown="event.preventDefault()" onclick="veqClear('p6-q')">Limpiar</button>
+              </div>
             </div>
             <div class="field-group">
-              <label>Residuo $R =$</label>
+              <label><strong>Residuo $R =$</strong></label>
               <input type="number" step="any" id="p6-r" class="math-input short" placeholder="Residuo" />
             </div>
           </div>
@@ -1249,7 +1541,6 @@
         id: 1,
         section: "Sec. 2.1",
         prompt: "Al trasladar la función $f(x) = \\sqrt[3]{x}$ cinco unidades hacia la derecha y tres unidades hacia abajo, la función transformada es:",
-        placeholder: "Ej: cbrt(x - 5) - 3",
         testPoints: [5, 6, 13, -3],
         targetFn: (x) => Math.cbrt(x - 5) - 3,
         latexAns: "\\sqrt[3]{x - 5} - 3",
@@ -1259,7 +1550,6 @@
         id: 2,
         section: "Sec. 2.1",
         prompt: "Si la función $f(x) = x^2$ se refleja verticalmente (sobre el eje $x$) y luego se traslada $6$ unidades hacia arriba, la función transformada es:",
-        placeholder: "Ej: -x^2 + 6",
         testPoints: [-3, -1, 0, 2, 4],
         targetFn: (x) => -(x * x) + 6,
         latexAns: "-x^2 + 6",
@@ -1269,7 +1559,6 @@
         id: 3,
         section: "Sec. 2.1 y 2.2",
         prompt: "Al aplicar un estiramiento vertical por un factor de $4$ a la función $f(x) = |x|$ y luego trasladarla $2$ unidades hacia la izquierda, la función transformada es:",
-        placeholder: "Ej: 4*abs(x + 2)  o  4|x + 2|",
         testPoints: [-5, -2, 0, 3],
         targetFn: (x) => 4 * Math.abs(x + 2),
         latexAns: "4|x + 2|",
@@ -1279,7 +1568,6 @@
         id: 4,
         section: "Sec. 2.1 y 2.2",
         prompt: "Si la función $f(x) = \\sqrt{x}$ se encoge verticalmente por un factor de $\\dfrac{1}{3}$ y se refleja sobre el eje $y$, la función transformada es:",
-        placeholder: "Ej: (1/3)*sqrt(-x)",
         testPoints: [-9, -4, -1, 0],
         targetFn: (x) => (1 / 3) * Math.sqrt(-x),
         latexAns: "\\dfrac{1}{3}\\sqrt{-x}",
@@ -1324,16 +1612,26 @@
             <div><span class="q-num">(${q.id}) [${q.section}]</span> ${q.prompt}</div>
             <span class="q-pts">3 puntos</span>
           </div>
-          <div class="math-input-row">
-            <label><strong>$g(x) =$</strong></label>
-            <input type="text" id="fib-in-${q.id}" class="math-input" placeholder="${q.placeholder}" />
-          </div>
-          <div class="helper-chips">
-            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'sqrt()')">√ (sqrt)</button>
-            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'cbrt()')">∛ (cbrt)</button>
-            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'abs()')">|x| (abs)</button>
-            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', '^2')">x²</button>
-            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', '(1/3)')">1/3</button>
+          <div class="math-editor-wrap">
+            <div class="math-input-row">
+              <label><strong>$g(x) =$</strong></label>
+              <div id="fib-in-${q.id}" class="veq-box" data-preview="prev-fib-${q.id}"></div>
+              <div class="veq-preview" id="prev-fib-${q.id}">Vista previa: --</div>
+            </div>
+            <div class="math-toolbar">
+              <span class="math-toolbar-label">Insertar símbolo:</span>
+              <button type="button" class="mbtn" title="Raíz cuadrada" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'sqrt')">$\\sqrt{\\square}$</button>
+              <button type="button" class="mbtn" title="Raíz cúbica" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'cbrt')">$\\sqrt[3]{\\square}$</button>
+              <button type="button" class="mbtn" title="Valor absoluto" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'abs')">$|\\square|$</button>
+              <button type="button" class="mbtn" title="Fracción" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'frac')">$\\tfrac{\\square}{\\square}$</button>
+              <button type="button" class="mbtn" title="Al cuadrado" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'sq')">$x^2$</button>
+              <button type="button" class="mbtn" title="Exponente" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'pow')">$x^\\square$</button>
+              <button type="button" class="mbtn" title="Variable x" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'x')">$x$</button>
+              <button type="button" class="mbtn" title="Signo más" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'plus')">$+$ </button>
+              <button type="button" class="mbtn" title="Signo menos" onmousedown="event.preventDefault()" onclick="veqInsert('fib-in-${q.id}', 'minus')">$-$ </button>
+              <button type="button" class="mbtn mbtn-action" title="Salir fuera de la raíz, fracción o exponente" onmousedown="event.preventDefault()" onclick="veqExitWidget('fib-in-${q.id}')">→ Salir de raíz/fracción</button>
+              <button type="button" class="mbtn mbtn-action" title="Borrar todo el campo" onmousedown="event.preventDefault()" onclick="veqClear('fib-in-${q.id}')">Limpiar</button>
+            </div>
           </div>
           <div class="q-footer">
             <button class="btn btn-check-item" onclick="gradeSingleFIB(${q.id}, true)">Verificar</button>
@@ -1347,16 +1645,486 @@
       `).join("");
     }
 
-    function insertToken(inputId, token) {
-      const el = document.getElementById(inputId);
-      if (!el) return;
-      const start = el.selectionStart || el.value.length;
-      const end = el.selectionEnd || el.value.length;
-      const val = el.value;
-      el.value = val.slice(0, start) + token + val.slice(end);
-      el.focus();
-      const cursor = token.endsWith("()") ? start + token.length - 1 : start + token.length;
-      el.setSelectionRange(cursor, cursor);
+    // ==================== MOTOR DEL EDITOR VISUAL NATIVO (VEQ) ====================
+    let activeEqSlot = null;
+
+    function adjustSlotWidth(input) {
+      const len = input.value.length;
+      const isInnerOnly = input.parentElement && input.parentElement.classList.contains("m-inner-slot") && input.parentElement.children.length === 1;
+      if (len === 0 && isInnerOnly) {
+        input.style.width = "2.4ch";
+      } else {
+        input.style.width = Math.max(0.9, len + 0.5) + "ch";
+      }
+    }
+
+    function getRootVeqBox(node) {
+      let cur = node;
+      while (cur && !cur.classList?.contains("veq-box")) {
+        cur = cur.parentElement;
+      }
+      return cur;
+    }
+
+    function createEqSlot(initialValue = "", isInnerPlaceholder = false) {
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.className = "eq-slot";
+      inp.value = initialValue;
+      inp.placeholder = isInnerPlaceholder ? "□" : "";
+      inp.autocomplete = "off";
+      inp.autocapitalize = "off";
+      inp.spellcheck = false;
+      adjustSlotWidth(inp);
+
+      inp.addEventListener("focus", () => {
+        activeEqSlot = inp;
+      });
+
+      inp.addEventListener("input", () => {
+        adjustSlotWidth(inp);
+        const root = getRootVeqBox(inp);
+        if (root) updateVeqPreview(root.id);
+      });
+
+      inp.addEventListener("keydown", (e) => {
+        const root = getRootVeqBox(inp);
+        const allSlots = root ? Array.from(root.querySelectorAll("input.eq-slot")) : [];
+        const idx = allSlots.indexOf(inp);
+
+        // En fracciones: Flecha Abajo o Enter desde el numerador baja al denominador; Flecha Arriba sube al numerador
+        const inNum = inp.closest(".m-frac-num");
+        const inDen = inp.closest(".m-frac-den");
+        if (inNum && (e.key === "ArrowDown" || e.key === "Enter")) {
+          const frac = inNum.closest(".m-frac");
+          const denSlot = frac ? frac.querySelector(".m-frac-den input.eq-slot") : null;
+          if (denSlot) {
+            e.preventDefault();
+            denSlot.focus();
+            return;
+          }
+        }
+        if (inDen && e.key === "ArrowUp") {
+          const frac = inDen.closest(".m-frac");
+          const numSlot = frac ? frac.querySelector(".m-frac-num input.eq-slot") : null;
+          if (numSlot) {
+            e.preventDefault();
+            numSlot.focus();
+            return;
+          }
+        }
+
+        // Flecha derecha al final del texto -> pasa a la siguiente cajita (sale de raíz/fracción)
+        if (e.key === "ArrowRight" && inp.selectionStart === inp.value.length && idx >= 0 && idx < allSlots.length - 1) {
+          e.preventDefault();
+          const next = allSlots[idx + 1];
+          next.focus();
+          next.setSelectionRange(0, 0);
+          return;
+        }
+
+        // Flecha izquierda al inicio del texto -> pasa a la cajita anterior
+        if (e.key === "ArrowLeft" && inp.selectionStart === 0 && idx > 0) {
+          e.preventDefault();
+          const prev = allSlots[idx - 1];
+          prev.focus();
+          prev.setSelectionRange(prev.value.length, prev.value.length);
+          return;
+        }
+
+        // Backspace al inicio de un slot vacío
+        if (e.key === "Backspace" && inp.selectionStart === 0 && inp.selectionEnd === 0) {
+          const prevEl = inp.previousElementSibling;
+          // Si justo antes hay un widget y el slot actual está al lado
+          if (prevEl && prevEl.classList.contains("m-widget")) {
+            e.preventDefault();
+            const widgetSlots = Array.from(prevEl.querySelectorAll("input.eq-slot"));
+            const allEmpty = widgetSlots.every(s => s.value === "");
+            if (allEmpty) {
+              // Eliminar el widget vacío y unir con el slot anterior
+              const beforeSlot = prevEl.previousElementSibling;
+              prevEl.remove();
+              if (beforeSlot && beforeSlot.classList.contains("eq-slot")) {
+                const pos = beforeSlot.value.length;
+                beforeSlot.value += inp.value;
+                adjustSlotWidth(beforeSlot);
+                inp.remove();
+                beforeSlot.focus();
+                beforeSlot.setSelectionRange(pos, pos);
+              }
+              if (root) updateVeqPreview(root.id);
+            } else if (widgetSlots.length > 0) {
+              const lastInner = widgetSlots[widgetSlots.length - 1];
+              lastInner.focus();
+              lastInner.setSelectionRange(lastInner.value.length, lastInner.value.length);
+            }
+            return;
+          }
+
+          // Si estamos dentro de un widget vacío y pulsamos Backspace
+          const parentWidget = inp.closest(".m-widget");
+          if (parentWidget && inp.value === "") {
+            const widgetSlots = Array.from(parentWidget.querySelectorAll("input.eq-slot"));
+            if (widgetSlots.every(s => s.value === "")) {
+              e.preventDefault();
+              const beforeSlot = parentWidget.previousElementSibling;
+              const afterSlot = parentWidget.nextElementSibling;
+              parentWidget.remove();
+              if (beforeSlot && beforeSlot.classList.contains("eq-slot") && afterSlot && afterSlot.classList.contains("eq-slot")) {
+                const pos = beforeSlot.value.length;
+                beforeSlot.value += afterSlot.value;
+                adjustSlotWidth(beforeSlot);
+                afterSlot.remove();
+                beforeSlot.focus();
+                beforeSlot.setSelectionRange(pos, pos);
+              }
+              if (root) updateVeqPreview(root.id);
+            }
+          }
+        }
+      });
+
+      return inp;
+    }
+
+    function createInnerContainer(initialText = "") {
+      const span = document.createElement("span");
+      span.className = "veq-container m-inner-slot";
+      const slot = createEqSlot(initialText, true);
+      span.appendChild(slot);
+      return { container: span, firstSlot: slot };
+    }
+
+    function buildMathWidget(type, initialInnerText = "") {
+      const w = document.createElement("span");
+      w.className = "m-widget";
+      w.dataset.type = type;
+
+      if (type === "sqrt" || type === "cbrt") {
+        w.classList.add("m-radical");
+        if (type === "cbrt") {
+          const idx = document.createElement("span");
+          idx.className = "m-root-index";
+          idx.textContent = "3";
+          w.appendChild(idx);
+        }
+        const sym = document.createElement("span");
+        sym.className = "m-rad-symbol";
+        sym.innerHTML = "&radic;";
+        w.appendChild(sym);
+
+        const body = document.createElement("span");
+        body.className = "m-rad-content";
+        const { container, firstSlot } = createInnerContainer(initialInnerText);
+        body.appendChild(container);
+        w.appendChild(body);
+        return { widget: w, focusSlot: firstSlot };
+      }
+
+      if (type === "abs") {
+        w.classList.add("m-abs");
+        const bar1 = document.createElement("span");
+        bar1.className = "m-abs-bar";
+        const body = document.createElement("span");
+        body.className = "m-abs-content";
+        const { container, firstSlot } = createInnerContainer(initialInnerText);
+        body.appendChild(container);
+        const bar2 = document.createElement("span");
+        bar2.className = "m-abs-bar";
+        w.appendChild(bar1);
+        w.appendChild(body);
+        w.appendChild(bar2);
+        return { widget: w, focusSlot: firstSlot };
+      }
+
+      if (type === "frac") {
+        w.classList.add("m-frac");
+        const numWrap = document.createElement("span");
+        numWrap.className = "m-frac-num";
+        const num = createInnerContainer("");
+        numWrap.appendChild(num.container);
+
+        const bar = document.createElement("span");
+        bar.className = "m-frac-bar";
+
+        const denWrap = document.createElement("span");
+        denWrap.className = "m-frac-den";
+        const den = createInnerContainer("");
+        denWrap.appendChild(den.container);
+
+        w.appendChild(numWrap);
+        w.appendChild(bar);
+        w.appendChild(denWrap);
+        return { widget: w, focusSlot: num.firstSlot };
+      }
+
+      if (type === "pow") {
+        w.classList.add("m-sup");
+        const { container, firstSlot } = createInnerContainer(initialInnerText);
+        w.appendChild(container);
+        return { widget: w, focusSlot: firstSlot };
+      }
+
+      if (type === "parens" || type === "g") {
+        w.classList.add("m-parens");
+        if (type === "g") {
+          const fn = document.createElement("span");
+          fn.className = "m-fn-name";
+          fn.textContent = "g";
+          w.appendChild(fn);
+        }
+        const lpar = document.createElement("span");
+        lpar.className = "m-paren-char";
+        lpar.textContent = "(";
+        const { container, firstSlot } = createInnerContainer(initialInnerText);
+        const rpar = document.createElement("span");
+        rpar.className = "m-paren-char";
+        rpar.textContent = ")";
+        w.appendChild(lpar);
+        w.appendChild(container);
+        w.appendChild(rpar);
+        return { widget: w, focusSlot: firstSlot };
+      }
+
+      return null;
+    }
+
+    function initAllVeqBoxes() {
+      document.querySelectorAll(".veq-box").forEach(box => {
+        box.innerHTML = "";
+        const first = createEqSlot("", false);
+        first.placeholder = "Escribe o pulsa un símbolo...";
+        box.appendChild(first);
+
+        // Si el usuario hace clic en el fondo blanco de la caja, enfocar el último slot
+        box.addEventListener("mousedown", (e) => {
+          if (e.target === box) {
+            e.preventDefault();
+            const slots = box.querySelectorAll("input.eq-slot");
+            if (slots.length > 0) {
+              const last = slots[slots.length - 1];
+              last.focus();
+              last.setSelectionRange(last.value.length, last.value.length);
+            }
+          }
+        });
+
+        updateVeqPreview(box.id);
+      });
+    }
+
+    // Inserta un símbolo o estructura visual en la caja indicada
+    function veqInsert(boxId, cmd) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+
+      // Determinar en qué slot insertar: si el slot activo pertenece a esta caja, usarlo; si no, usar el último slot de la caja
+      let targetSlot = activeEqSlot;
+      if (!targetSlot || !box.contains(targetSlot)) {
+        const allSlots = box.querySelectorAll("input.eq-slot");
+        targetSlot = allSlots[allSlots.length - 1];
+      }
+      if (!targetSlot) return;
+
+      targetSlot.placeholder = "";
+      const pos = typeof targetSlot.selectionStart === "number" ? targetSlot.selectionStart : targetSlot.value.length;
+      const before = targetSlot.value.slice(0, pos);
+      const after = targetSlot.value.slice(pos);
+
+      // Comandos de texto simple: x, +, -
+      if (cmd === "x" || cmd === "plus" || cmd === "minus") {
+        const charMap = { x: "x", plus: "+", minus: "-" };
+        const ch = charMap[cmd];
+        targetSlot.value = before + ch + after;
+        adjustSlotWidth(targetSlot);
+        targetSlot.focus();
+        targetSlot.setSelectionRange(pos + ch.length, pos + ch.length);
+        updateVeqPreview(boxId);
+        return;
+      }
+
+      // Comando x^2: inserta 'x' + exponente '2' y deja el cursor afuera listo para seguir escribiendo
+      if (cmd === "sq") {
+        targetSlot.value = before + "x";
+        adjustSlotWidth(targetSlot);
+        const built = buildMathWidget("pow", "2");
+        const trailingSlot = createEqSlot(after, false);
+        const parent = targetSlot.parentNode;
+        parent.insertBefore(built.widget, targetSlot.nextSibling);
+        parent.insertBefore(trailingSlot, built.widget.nextSibling);
+        adjustSlotWidth(built.focusSlot);
+        trailingSlot.focus();
+        trailingSlot.setSelectionRange(0, 0);
+        updateVeqPreview(boxId);
+        return;
+      }
+
+      // Estructuras con cajita interna: sqrt, cbrt, abs, frac, pow, parens, g
+      const built = buildMathWidget(cmd, "");
+      if (!built) return;
+
+      targetSlot.value = before;
+      adjustSlotWidth(targetSlot);
+      const trailingSlot = createEqSlot(after, false);
+      const parent = targetSlot.parentNode;
+      parent.insertBefore(built.widget, targetSlot.nextSibling);
+      parent.insertBefore(trailingSlot, built.widget.nextSibling);
+
+      built.focusSlot.focus();
+      updateVeqPreview(boxId);
+    }
+
+    // Sale del widget actual (raíz, fracción, exponente, paréntesis) hacia la derecha (o baja al denominador si está en el numerador vacío)
+    function veqExitWidget(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      if (activeEqSlot && box.contains(activeEqSlot)) {
+        const inNum = activeEqSlot.closest(".m-frac-num");
+        if (inNum) {
+          const frac = inNum.closest(".m-frac");
+          const denSlot = frac ? frac.querySelector(".m-frac-den input.eq-slot") : null;
+          if (denSlot && denSlot.value === "") {
+            denSlot.focus();
+            return;
+          }
+        }
+        const parentWidget = activeEqSlot.closest(".m-widget");
+        if (parentWidget && parentWidget.nextElementSibling && parentWidget.nextElementSibling.classList.contains("eq-slot")) {
+          const nextSlot = parentWidget.nextElementSibling;
+          nextSlot.focus();
+          nextSlot.setSelectionRange(0, 0);
+          return;
+        }
+      }
+      // Si ya estaba afuera, ir al último slot de la caja
+      const topSlots = Array.from(box.children).filter(el => el.classList.contains("eq-slot"));
+      if (topSlots.length > 0) {
+        const last = topSlots[topSlots.length - 1];
+        last.focus();
+        last.setSelectionRange(last.value.length, last.value.length);
+      }
+    }
+
+    function veqClear(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      box.innerHTML = "";
+      const first = createEqSlot("", false);
+      first.placeholder = "Escribe o pulsa un símbolo...";
+      box.appendChild(first);
+      first.focus();
+      updateVeqPreview(boxId);
+    }
+
+    // Serializa el árbol DOM de una caja a LaTeX para la vista previa KaTeX
+    function serializeContainerToLatex(container) {
+      let out = "";
+      Array.from(container.children).forEach(child => {
+        if (child.classList.contains("eq-slot")) {
+          let v = child.value.replace(/\*/g, " \\cdot ");
+          out += v;
+        } else if (child.classList.contains("m-widget")) {
+          const type = child.dataset.type;
+          if (type === "sqrt") {
+            const inner = child.querySelector(".m-rad-content > .veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `\\sqrt{${body}}`;
+          } else if (type === "cbrt") {
+            const inner = child.querySelector(".m-rad-content > .veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `\\sqrt[3]{${body}}`;
+          } else if (type === "abs") {
+            const inner = child.querySelector(".m-abs-content > .veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `\\left|${body}\\right|`;
+          } else if (type === "frac") {
+            const num = child.querySelector(".m-frac-num > .veq-container");
+            const den = child.querySelector(".m-frac-den > .veq-container");
+            const nTex = serializeContainerToLatex(num) || "\\square";
+            const dTex = serializeContainerToLatex(den) || "\\square";
+            out += `\\dfrac{${nTex}}{${dTex}}`;
+          } else if (type === "pow") {
+            const inner = child.querySelector(".veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `^{${body}}`;
+          } else if (type === "parens") {
+            const inner = child.querySelector(".veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `\\left(${body}\\right)`;
+          } else if (type === "g") {
+            const inner = child.querySelector(".veq-container");
+            const body = serializeContainerToLatex(inner) || "\\square";
+            out += `g\\left(${body}\\right)`;
+          }
+        }
+      });
+      return out;
+    }
+
+    // Serializa el árbol DOM de una caja a expresión matemática evaluable
+    function serializeContainerToMath(container) {
+      let out = "";
+      Array.from(container.children).forEach(child => {
+        if (child.classList.contains("eq-slot")) {
+          out += child.value;
+        } else if (child.classList.contains("m-widget")) {
+          const type = child.dataset.type;
+          if (type === "sqrt") {
+            const inner = child.querySelector(".m-rad-content > .veq-container");
+            out += `sqrt(${serializeContainerToMath(inner)})`;
+          } else if (type === "cbrt") {
+            const inner = child.querySelector(".m-rad-content > .veq-container");
+            out += `cbrt(${serializeContainerToMath(inner)})`;
+          } else if (type === "abs") {
+            const inner = child.querySelector(".m-abs-content > .veq-container");
+            out += `abs(${serializeContainerToMath(inner)})`;
+          } else if (type === "frac") {
+            const num = child.querySelector(".m-frac-num > .veq-container");
+            const den = child.querySelector(".m-frac-den > .veq-container");
+            out += `((${serializeContainerToMath(num)})/(${serializeContainerToMath(den)}))`;
+          } else if (type === "pow") {
+            const inner = child.querySelector(".veq-container");
+            out += `^(${serializeContainerToMath(inner)})`;
+          } else if (type === "parens") {
+            const inner = child.querySelector(".veq-container");
+            out += `(${serializeContainerToMath(inner)})`;
+          } else if (type === "g") {
+            const inner = child.querySelector(".veq-container");
+            out += `g(${serializeContainerToMath(inner)})`;
+          }
+        }
+      });
+      return out;
+    }
+
+    function getVeqMathString(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return "";
+      return serializeContainerToMath(box).trim();
+    }
+
+    function updateVeqPreview(boxId) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      const prevId = box.dataset.preview;
+      if (!prevId) return;
+      const prevEl = document.getElementById(prevId);
+      if (!prevEl) return;
+
+      const latex = serializeContainerToLatex(box).trim();
+      if (!latex) {
+        prevEl.innerHTML = "Vista previa: --";
+        return;
+      }
+      if (window.katex) {
+        try {
+          prevEl.innerHTML = "<span>Vista previa:</span> " + window.katex.renderToString(latex, { throwOnError: false });
+        } catch (e) {
+          prevEl.textContent = "Vista previa: " + latex;
+        }
+      } else {
+        prevEl.textContent = "Vista previa: " + latex;
+      }
     }
 
     function updateMCTable(id, letter) {
@@ -1378,57 +2146,59 @@
       });
     }
 
-    // ==================== EVALUADOR MATEMÁTICO SEGURO ====================
-    function evalMathExpr(rawExpr, xVal) {
-      if (!rawExpr || !rawExpr.trim()) return NaN;
-      let s = rawExpr.trim().toLowerCase();
+    // ==================== EVALUADOR MATEMÁTICO ====================
+    function mathStringToJs(rawStr) {
+      if (!rawStr || !String(rawStr).trim()) return "";
+      let s = String(rawStr).trim();
 
-      // Quitar "g(x) =" o "f(x) =" si el estudiante lo escribió
-      s = s.replace(/^[gfqp]\s*\(\s*x\s*\)\s*=/, "").trim();
+      s = s.replace(/^[gfqp]\s*\(\s*x\s*\)\s*=/i, "").trim();
+      s = s.replace(/\u2212/g, "-");
 
-      // Reemplazar barras de valor absoluto |...| por abs(...)
-      s = s.replace(/\|([^|]+)\|/g, "abs($1)");
+      // Reemplazar barras |...| si las escribieron con teclado
+      let safety = 0;
+      while (/\|([^|]+)\|/.test(s) && safety++ < 20) {
+        s = s.replace(/\|([^|]+)\|/g, "abs($1)");
+      }
 
-      // Símbolos Unicode comunes
-      s = s.replace(/∛\s*\(([^)]+)\)/g, "cbrt($1)");
-      s = s.replace(/√\s*\(([^)]+)\)/g, "sqrt($1)");
-      s = s.replace(/raiz3\s*\(/g, "cbrt(");
-      s = s.replace(/raiz\s*\(/g, "sqrt(");
-
-      // Potencias: cuidar -x^2 -> -(x^2) según convención algebraica estándar
+      // Potencias ^ -> **
       s = s.replace(/\^/g, "**");
-      // En JS -x**2 lanza SyntaxError; convertimos -x**n en -(x**n)
-      s = s.replace(/-\s*x\s*\*\*\s*(\d+)/g, "-(x**$1)");
 
-      // Multiplicación implícita común: 2x, 4abs, (1/3)sqrt, )x, )(
-      s = s.replace(/(\d)(x|abs|sqrt|cbrt|\()/g, "$1*$2");
-      s = s.replace(/\)(x|\d|abs|sqrt|cbrt|\()/g, ")*$1");
-      s = s.replace(/(x)(\()/g, "$1*$2");
+      // Multiplicación implícita: 2x, 4abs, )x, )(, )sqrt, )cbrt, x(
+      s = s.replace(/(\d)\s*(x|g|abs|sqrt|cbrt|\()/gi, "$1*$2");
+      s = s.replace(/\)\s*(x|g|\d|abs|sqrt|cbrt|\()/gi, ")*$1");
+      s = s.replace(/(x)\s*(\(|abs|sqrt|cbrt)/gi, "$1*$2");
 
-      // Funciones Math
+      // Proteger signo menos unario antes de potencia (-x**2 o -x**(2) -> -(x**(2)))
+      s = s.replace(/-\s*(x|\([^()]+\))\s*\*\*\s*(\([^()]+\)|\d+)/g, "-($1**$2)");
+
       s = s.replace(/\bcbrt\b/g, "Math.cbrt");
       s = s.replace(/\bsqrt\b/g, "Math.sqrt");
       s = s.replace(/\babs\b/g, "Math.abs");
 
+      return s;
+    }
+
+    function evalMathExpr(rawStr, xVal, gFn = null) {
+      const jsExpr = mathStringToJs(rawStr);
+      if (!jsExpr) return NaN;
       try {
-        const fn = new Function("x", `"use strict"; return (${s});`);
-        return fn(xVal);
+        if (gFn) {
+          const fn = new Function("x", "g", `"use strict"; return (${jsExpr});`);
+          return fn(xVal, gFn);
+        } else {
+          const fn = new Function("x", `"use strict"; return (${jsExpr});`);
+          return fn(xVal);
+        }
       } catch (e) {
         return NaN;
       }
     }
 
-    function parseFractionOrNumber(str) {
-      if (str === null || str === undefined) return NaN;
-      const clean = String(str).trim().replace(/\s+/g, "");
-      if (!clean) return NaN;
-      if (/^[+-]?\d+\/[+-]?\d+$/.test(clean)) {
-        const parts = clean.split("/");
-        const num = parseFloat(parts[0]);
-        const den = parseFloat(parts[1]);
-        return den !== 0 ? num / den : NaN;
-      }
-      return Number(clean);
+    function parseVeqNumber(boxId) {
+      const raw = getVeqMathString(boxId);
+      if (!raw) return NaN;
+      const val = evalMathExpr(raw, 0);
+      return typeof val === "number" ? val : NaN;
     }
 
     function showFeedback(elId, blockId, status, msg) {
@@ -1473,11 +2243,11 @@
     // ==================== CORRECCIÓN PARTE II ====================
     function gradeSingleFIB(id, showMsg = true) {
       const q = fibQuestions.find(item => item.id === id);
-      const raw = document.getElementById(`fib-in-${id}`).value;
+      const raw = getVeqMathString(`fib-in-${id}`);
 
-      if (!raw || !raw.trim()) {
+      if (!raw) {
         if (showMsg) {
-          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", "⚠️ Escribe una expresión algebraica para verificar. (0 / 3 pts)");
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", "⚠️ Usa los botones de símbolos para construir la fórmula antes de verificar. (0 / 3 pts)");
         }
         return 0;
       }
@@ -1494,12 +2264,12 @@
 
       if (allMatch) {
         if (showMsg) {
-          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "correct", `✓ ¡Expresión equivalente correcta! (3 / 3 pts)`);
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "correct", `✓ ¡Fórmula correcta! (3 / 3 pts)`);
         }
         return 3;
       } else {
         if (showMsg) {
-          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", `✗ La expresión no coincide con la transformación descrita. Pulsa "Ver solución" para revisar. (0 / 3 pts)`);
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", `✗ La expresión no coincide con la transformación descrita. Revisa la Vista previa o pulsa "Ver solución". (0 / 3 pts)`);
         }
         return 0;
       }
@@ -1513,16 +2283,21 @@
       const st = document.getElementById("p1-stretch").value;
       const rf = document.getElementById("p1-refl").value;
       const tv = document.getElementById("p1-trans-v").value;
-      const ing = document.getElementById("p1-in-g").value.replace(/\s+/g, "").toLowerCase();
+      const ingRaw = getVeqMathString("p1-in-g");
 
       if (th === "izq3") pts += 0.75;
       if (st === "estV2") pts += 0.75;
       if (rf === "ejeX") pts += 0.75;
       if (tv === "arr4") pts += 0.75;
 
-      if (ing === "-2g(x+3)+4" || ing === "-2*g(x+3)+4" || ing === "4-2g(x+3)" || ing === "4-2*g(x+3)") {
-        pts += 1;
-      }
+      const gTest = (u) => Math.sqrt(u);
+      const testXs = [-2, 1, 6];
+      const gOk = ingRaw !== "" && /g/i.test(ingRaw) && testXs.every(x => {
+        const val = evalMathExpr(ingRaw, x, gTest);
+        const target = -2 * Math.sqrt(x + 3) + 4;
+        return !isNaN(val) && Math.abs(val - target) < 1e-4;
+      });
+      if (gOk) pts += 1;
 
       const y1 = parseFloat(document.getElementById("p1-pt1").value);
       const y2 = parseFloat(document.getElementById("p1-pt2").value);
@@ -1580,10 +2355,10 @@
     // Problema 3 (8 pts)
     function gradeOpen3(showMsg = true) {
       let pts = 0;
-      const ia = parseFractionOrNumber(document.getElementById("p3-i-a").value);
-      const ib = parseFractionOrNumber(document.getElementById("p3-i-b").value);
-      const iia = parseFractionOrNumber(document.getElementById("p3-ii-a").value);
-      const iib = parseFractionOrNumber(document.getElementById("p3-ii-b").value);
+      const ia = parseVeqNumber("p3-i-a");
+      const ib = parseVeqNumber("p3-i-b");
+      const iia = parseVeqNumber("p3-ii-a");
+      const iib = parseVeqNumber("p3-ii-b");
 
       if (Math.abs(ia - 7) < 1e-3) pts += 2;
       if (Math.abs(ib - (-14)) < 1e-3) pts += 2;
@@ -1600,11 +2375,13 @@
     // Problema 4 (14 pts)
     function gradeOpen4(showMsg = true) {
       let pts = 0;
-      const lead = document.getElementById("p4-lead").value.replace(/\s+/g, "").toLowerCase();
+      const leadRaw = getVeqMathString("p4-lead");
       const deg = parseInt(document.getElementById("p4-deg").value, 10);
       const end = document.getElementById("p4-end").value;
 
-      if (lead === "-x^4" || lead === "-1x^4") pts += 1;
+      const leadTest = [-2, -1, 2, 3];
+      const leadOk = leadRaw !== "" && leadTest.every(x => Math.abs(evalMathExpr(leadRaw, x) - (-Math.pow(x, 4))) < 1e-3);
+      if (leadOk) pts += 1;
       if (deg === 4) pts += 1;
       if (end === "down-down") pts += 1;
 
@@ -1632,12 +2409,12 @@
     // Problema 5 (6 pts)
     function gradeOpen5(showMsg = true) {
       let pts = 0;
-      const qRaw = document.getElementById("p5-q").value;
-      const rRaw = document.getElementById("p5-r").value;
+      const qRaw = getVeqMathString("p5-q");
+      const rRaw = getVeqMathString("p5-r");
 
       const testX = [-2, -1, 0, 1, 3];
-      const qOk = qRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (2 * x * x - 3 * x - 3)) < 1e-3);
-      const rOk = rRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(rRaw, x) - (6 * x + 1)) < 1e-3);
+      const qOk = qRaw !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (2 * x * x - 3 * x - 3)) < 1e-3);
+      const rOk = rRaw !== "" && testX.every(x => Math.abs(evalMathExpr(rRaw, x) - (6 * x + 1)) < 1e-3);
 
       if (qOk) pts += 3;
       if (rOk) pts += 3;
@@ -1652,13 +2429,13 @@
     // Problema 6 (8 pts)
     function gradeOpen6(showMsg = true) {
       let pts = 0;
-      const qRaw = document.getElementById("p6-q").value;
+      const qRaw = getVeqMathString("p6-q");
       const r1 = parseFloat(document.getElementById("p6-r").value);
       const r2 = parseFloat(document.getElementById("p6-r2").value);
       const fac = document.getElementById("p6-factor").value;
 
       const testX = [-2, 0, 1, 3];
-      const qOk = qRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (x * x + 1)) < 1e-3);
+      const qOk = qRaw !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (x * x + 1)) < 1e-3);
 
       if (qOk) pts += 3;
       if (Math.abs(r1 - 10) < 1e-3) pts += 2;
@@ -1721,6 +2498,7 @@
       if (!confirm("¿Deseas borrar todas tus respuestas y reiniciar el examen?")) return;
       document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
       document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => el.value = "");
+      initAllVeqBoxes();
       document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
       for (let i = 1; i <= 10; i++) updateMCTable(i, "-");
       document.querySelectorAll(".feedback-box, .solution-box").forEach(el => el.classList.remove("show"));
@@ -1738,7 +2516,6 @@
       const toX = x => ((x - xMin) / (xMax - xMin)) * w;
       const toY = y => h - ((y - yMin) / (yMax - yMin)) * h;
 
-      // Cuadrícula
       ctx.strokeStyle = "#e2e8f0";
       ctx.lineWidth = 1;
       for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
@@ -1754,7 +2531,6 @@
         ctx.stroke();
       }
 
-      // Ejes
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
@@ -1764,7 +2540,6 @@
       ctx.lineTo(toX(0), h);
       ctx.stroke();
 
-      // Etiquetas
       ctx.fillStyle = "#475569";
       ctx.font = "11px system-ui, sans-serif";
       for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
@@ -1870,7 +2645,6 @@
       const ctx = c.getContext("2d");
       const { toX, toY } = drawGrid(ctx, c.width, c.height, -4, 4, -8, 10);
 
-      // Siempre graficar los ceros en el eje x
       drawPoint(ctx, toX, toY, -2, 0, "#0b5d3b", "(-2,0)");
       drawPoint(ctx, toX, toY, 0, 0, "#0b5d3b", "(0,0)");
       drawPoint(ctx, toX, toY, 2, 0, "#0b5d3b", "(2,0)");
@@ -1897,6 +2671,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       renderMC();
       renderFIB();
+      initAllVeqBoxes();
       drawP1Canvas(false);
       drawP2Canvas(false);
       drawP4Canvas(false);
