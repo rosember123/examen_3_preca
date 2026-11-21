@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MATE 3171 - Tercer Examen Parcial Interactivo | UPRM</title>
+  <!-- KaTeX para renderizado matemático -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      --uprm-green: #0b5d3b;
+      --uprm-green-dark: #074229;
+      --uprm-green-light: #e7f3ed;
+      --accent-gold: #c59b27;
+      --bg: #f5f7f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --ok-bg: #ecfdf5;
+      --ok-border: #10b981;
+      --ok-text: #065f46;
+      --err-bg: #fef2f2;
+      --err-border: #ef4444;
+      --err-text: #991b1b;
+      --warn-bg: #fffbeb;
+      --warn-border: #f59e0b;
+      --warn-text: #92400e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding-bottom: 4rem;
+    }
+
+    /* Barra superior */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--uprm-green);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .topbar-title {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.2px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      background: rgba(255, 255, 255, 0.16);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 0.95rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary {
+      background: #ffffff;
+      color: var(--uprm-green-dark);
+    }
+    .btn-primary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-green {
+      background: var(--uprm-green);
+      color: #fff;
+    }
+    .btn-green:hover {
+      background: var(--uprm-green-dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-check-item {
+      background: var(--uprm-green-light);
+      color: var(--uprm-green-dark);
+      border: 1px solid #a7d7c0;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.83rem;
+    }
+    .btn-check-item:hover {
+      background: #d1eadf;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Encabezado institucional tipo examen */
+    .exam-header {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      border-top: 6px solid var(--uprm-green);
+      margin-bottom: 1.5rem;
+    }
+
+    .exam-header h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.25rem;
+      color: var(--uprm-green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .exam-header h2 {
+      margin: 0.25rem 0 0;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .exam-header .exam-subtitle {
+      text-align: center;
+      margin-top: 0.6rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .student-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .student-info label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .student-info input {
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.92rem;
+    }
+
+    .instructions-box {
+      margin-top: 1.25rem;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      padding: 0.9rem 1.2rem;
+      background: #f8fafc;
+      font-size: 0.9rem;
+    }
+
+    .instructions-box ul {
+      margin: 0.4rem 0 0;
+      padding-left: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.35rem 1.5rem;
+    }
+
+    /* Secciones */
+    .part-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      margin-bottom: 1.5rem;
+    }
+
+    .part-header {
+      border-bottom: 2px solid var(--uprm-green);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .part-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--uprm-green-dark);
+    }
+
+    /* Tabla resumen Parte I */
+    .ans-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+    }
+
+    .ans-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .ans-table th,
+    .ans-table td {
+      border: 1px solid #475569;
+      padding: 0.4rem;
+      min-width: 48px;
+    }
+
+    .ans-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+
+    .ans-table td {
+      font-weight: 700;
+      color: var(--uprm-green-dark);
+      height: 2.1rem;
+    }
+
+    /* Tarjeta de pregunta */
+    .q-block {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      background: #ffffff;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .q-block.correct {
+      border-color: var(--ok-border);
+      background: var(--ok-bg);
+    }
+
+    .q-block.incorrect {
+      border-color: var(--err-border);
+      background: var(--err-bg);
+    }
+
+    .q-block.partial {
+      border-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+
+    .q-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .q-num {
+      font-weight: 700;
+      color: var(--uprm-green-dark);
+    }
+
+    .q-pts {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: #f1f5f9;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+    }
+
+    .opt-label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      background: #fff;
+      transition: all 0.12s ease;
+    }
+
+    .opt-label:hover {
+      border-color: var(--uprm-green);
+      background: var(--uprm-green-light);
+    }
+
+    .opt-label input[type="radio"] {
+      accent-color: var(--uprm-green);
+      transform: scale(1.1);
+    }
+
+    /* Inputs matemáticos */
+    .math-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+    }
+
+    .math-input {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: 'Consolas', 'Menlo', monospace;
+      min-width: 220px;
+    }
+
+    .math-input.short {
+      min-width: 90px;
+      width: 110px;
+    }
+
+    .helper-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.45rem;
+    }
+
+    .chip-btn {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .chip-btn:hover {
+      background: #e2e8f0;
+    }
+
+    /* Retroalimentación y solución */
+    .feedback-box {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .feedback-box.ok {
+      background: #d1fae5;
+      color: var(--ok-text);
+      border: 1px solid #6ee7b7;
+    }
+
+    .feedback-box.err {
+      background: #fee2e2;
+      color: var(--err-text);
+      border: 1px solid #fca5a5;
+    }
+
+    .feedback-box.warn {
+      background: #fef3c7;
+      color: var(--warn-text);
+      border: 1px solid #fcd34d;
+    }
+
+    .solution-box {
+      margin-top: 0.65rem;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border-left: 4px solid var(--uprm-green);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .solution-box.show {
+      display: block;
+    }
+
+    .q-footer {
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    /* Subpreguntas Parte III */
+    .subq {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .subq-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.88rem;
+    }
+
+    .field-group select,
+    .field-group input {
+      padding: 0.45rem 0.6rem;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      background: #fff;
+    }
+
+    /* Canvas de gráficas */
+    .canvas-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    canvas.coord-plane {
+      border: 1px solid #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      max-width: 100%;
+      cursor: crosshair;
+    }
+
+    .canvas-caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Panel de resultado general */
+    .summary-banner {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--uprm-green);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 14px rgba(11, 93, 59, 0.12);
+    }
+
+    .summary-banner.show {
+      display: block;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .stat-card .val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--uprm-green-dark);
+    }
+
+    .stat-card .lbl {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    @media print {
+      .topbar, .q-footer, .helper-chips {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+      }
+      .part-card, .exam-header {
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR -->
+  <header class="topbar">
+    <div class="topbar-title">MATE 3171 · Examen Parcial III Interactivo (UPRM)</div>
+    <div class="topbar-actions">
+      <div class="score-pill" id="liveScorePill">Puntuación: -- / 100 pts</div>
+      <button class="btn btn-primary" onclick="gradeAllExam()">✓ Someter Examen Completo</button>
+      <button class="btn btn-outline" onclick="toggleAllSolutions()">Ver/Ocultar Soluciones</button>
+      <button class="btn btn-outline" onclick="resetExam()">Reiniciar</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- BANNER DE RESULTADOS -->
+    <section class="summary-banner" id="summaryBanner">
+      <h3 style="margin:0; color: var(--uprm-green-dark);" id="summaryHeadline">Resultado del Examen</h3>
+      <p style="margin: 0.3rem 0 0; font-size: 0.92rem; color: var(--muted);" id="summarySubtext"></p>
+      <div class="summary-grid">
+        <div class="stat-card">
+          <div class="val" id="statTotal">0 / 100</div>
+          <div class="lbl">Nota Total</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="statPart1">0 / 30</div>
+          <div class="lbl">Parte I: Escoge</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="statPart2">0 / 12</div>
+          <div class="lbl">Parte II: Llenablancos</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" id="statPart3">0 / 58</div>
+          <div class="lbl">Parte III: Abiertos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENCABEZADO DEL EXAMEN -->
+    <section class="exam-header">
+      <h1>Universidad de Puerto Rico</h1>
+      <h2>Recinto Universitario de Mayagüez · Precálculo I (MATE 3171)</h2>
+      <div class="exam-subtitle">TERCER EXAMEN PARCIAL (PRÁCTICA INTERACTIVA) · Valor: 100 pts.</div>
+
+      <div class="student-info">
+        <label>Nombre del estudiante:
+          <input type="text" placeholder="Escribe tu nombre..." />
+        </label>
+        <label># Estudiante:
+          <input type="text" placeholder="802-XX-XXXX" />
+        </label>
+        <label>Profesor:
+          <input type="text" placeholder="Nombre del profesor" />
+        </label>
+        <label>Sección:
+          <input type="text" placeholder="Ej. 010" />
+        </label>
+      </div>
+
+      <div class="instructions-box">
+        <strong>Instrucciones y Temas Evaluados (Secciones 2.1–2.4 y 3.1–3.3):</strong>
+        <ul>
+          <li>Dispone de 1 hora y 30 minutos como referencia para responder el examen.</li>
+          <li>Puede verificar cada ejercicio individualmente o pulsar <strong>"Someter Examen Completo"</strong> arriba.</li>
+          <li>Para raíces en los llenablancos puede usar los botones de ayuda: <code>sqrt(x)</code> para $\sqrt{x}$, <code>cbrt(x)</code> para $\sqrt[3]{x}$, y <code>abs(x)</code> o <code>|x|</code> para valor absoluto.</li>
+          <li>En las gráficas interactivas, complete los puntos o parámetros y la gráfica se trazará en el plano cartesiano.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==================== PARTE I: ESCOGE ==================== -->
+    <section class="part-card">
+      <div class="part-header">
+        <h3>Parte I. (30 puntos) Escoge</h3>
+        <span style="font-size:0.9rem; color:var(--muted);">Seleccione la mejor alternativa (3 puntos cada uno)</span>
+      </div>
+
+      <div class="ans-table-wrap">
+        <table class="ans-table">
+          <thead>
+            <tr>
+              <th>(1)</th><th>(2)</th><th>(3)</th><th>(4)</th><th>(5)</th>
+              <th>(6)</th><th>(7)</th><th>(8)</th><th>(9)</th><th>(10)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="tbl-mc-1">-</td><td id="tbl-mc-2">-</td><td id="tbl-mc-3">-</td><td id="tbl-mc-4">-</td><td id="tbl-mc-5">-</td>
+              <td id="tbl-mc-6">-</td><td id="tbl-mc-7">-</td><td id="tbl-mc-8">-</td><td id="tbl-mc-9">-</td><td id="tbl-mc-10">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="mcContainer"></div>
+    </section>
+
+    <!-- ==================== PARTE II: LLENABLANCOS ==================== -->
+    <section class="part-card">
+      <div class="part-header">
+        <h3>Parte II. (12 puntos) Llenablancos</h3>
+        <span style="font-size:0.9rem; color:var(--muted);">Escriba la expresión algebraica de la función transformada $g(x)$ (3 puntos cada uno)</span>
+      </div>
+
+      <div id="fibContainer"></div>
+    </section>
+
+    <!-- ==================== PARTE III: PROBLEMAS ABIERTOS ==================== -->
+    <section class="part-card">
+      <div class="part-header">
+        <h3>Parte III. (58 puntos) Problemas Abiertos</h3>
+        <span style="font-size:0.9rem; color:var(--muted);">Resuelva cada parte y verifique su procedimiento</span>
+      </div>
+
+      <!-- PROBLEMA 1 -->
+      <div class="q-block" id="open-block-1">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(1) [Sec. 2.1 y 2.2]</span> Considere la función:
+            <div style="text-align:center; margin: 0.4rem 0; font-size: 1.08rem;">
+              $$f(x) = -2\sqrt{x + 3} + 4$$
+            </div>
+          </div>
+          <span class="q-pts">10 puntos</span>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">i. (4 puntos) Identifique las transformaciones que se le aplican a $g(x) = \sqrt{x}$ para obtener $f(x)$ y escriba $f(x)$ en términos de $g$:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>1. Traslación horizontal:</label>
+              <select id="p1-trans-h">
+                <option value="">-- Seleccione --</option>
+                <option value="izq3">3 unidades hacia la izquierda</option>
+                <option value="der3">3 unidades hacia la derecha</option>
+                <option value="izq4">4 unidades hacia la izquierda</option>
+                <option value="der4">4 unidades hacia la derecha</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>2. Estiramiento / encogimiento:</label>
+              <select id="p1-stretch">
+                <option value="">-- Seleccione --</option>
+                <option value="estV2">Estiramiento vertical por factor de 2</option>
+                <option value="encV2">Encogimiento vertical por factor de 1/2</option>
+                <option value="estH2">Estiramiento horizontal por factor de 2</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>3. Reflexión:</label>
+              <select id="p1-refl">
+                <option value="">-- Seleccione --</option>
+                <option value="ejeX">Reflexión vertical (sobre el eje x)</option>
+                <option value="ejeY">Reflexión horizontal (sobre el eje y)</option>
+                <option value="ninguna">Sin reflexión</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>4. Traslación vertical:</label>
+              <select id="p1-trans-v">
+                <option value="">-- Seleccione --</option>
+                <option value="arr4">4 unidades hacia arriba</option>
+                <option value="aba4">4 unidades hacia abajo</option>
+                <option value="arr3">3 unidades hacia arriba</option>
+              </select>
+            </div>
+          </div>
+          <div class="math-input-row" style="margin-top:0.8rem;">
+            <label><strong>$f(x)$ en términos de $g$:</strong> $f(x) =$</label>
+            <input type="text" id="p1-in-g" class="math-input" placeholder="Ej: -2*g(x+3)+4" />
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">ii. (6 puntos) Evalúe $f(x) = -2\sqrt{x+3} + 4$ en los siguientes valores clave de su dominio $[-3, \infty)$ para trazar la gráfica en el plano:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Punto inicial en $x = -3 \Rightarrow y =$</label>
+              <input type="number" step="any" id="p1-pt1" placeholder="f(-3)" oninput="drawP1Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>En $x = -2 \Rightarrow y =$</label>
+              <input type="number" step="any" id="p1-pt2" placeholder="f(-2)" oninput="drawP1Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Intercepto en $x$ ($x = 1$) $\Rightarrow y =$</label>
+              <input type="number" step="any" id="p1-pt3" placeholder="f(1)" oninput="drawP1Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>En $x = 6 \Rightarrow y =$</label>
+              <input type="number" step="any" id="p1-pt4" placeholder="f(6)" oninput="drawP1Canvas()" />
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="canvasP1" class="coord-plane" width="380" height="380"></canvas>
+            <div class="canvas-caption">Los puntos ingresados se grafican en azul. Al verificar se muestra la curva $f(x) = -2\sqrt{x+3}+4$.</div>
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen1(true)">Verificar Problema 1</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-1')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-1"></div>
+        <div class="solution-box" id="sol-open-1">
+          <strong>Solución paso a paso:</strong><br/>
+          i. Partiendo de $g(x) = \sqrt{x}$:<br/>
+          1) Se traslada $3$ unidades a la izquierda: $\sqrt{x+3}$.<br/>
+          2) Se estira verticalmente por un factor de $2$: $2\sqrt{x+3}$.<br/>
+          3) Se refleja sobre el eje $x$ (verticalmente): $-2\sqrt{x+3}$.<br/>
+          4) Se traslada $4$ unidades hacia arriba: $f(x) = -2\sqrt{x+3} + 4$.<br/>
+          En términos de $g$: $f(x) = -2g(x+3) + 4$.<br/>
+          ii. Puntos clave: $(-3, 4)$, $(-2, 2)$, $(1, 0)$ y $(6, -2)$.
+        </div>
+      </div>
+
+      <!-- PROBLEMA 2 -->
+      <div class="q-block" id="open-block-2">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(2) [Sec. 2.3]</span> Considere la función cuadrática:
+            <div style="text-align:center; margin: 0.4rem 0; font-size: 1.08rem;">
+              $$f(x) = 2x^2 - 8x + 6$$
+            </div>
+          </div>
+          <span class="q-pts">12 puntos</span>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">i. (6 puntos) Escriba $f(x)$ en la forma estándar $f(x) = a(x - h)^2 + k$. Indique $a, h, k$, el vértice $(h,k)$ y hacia dónde abre:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Valor de $a$:</label>
+              <input type="number" step="any" id="p2-a" placeholder="a" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Valor de $h$ (coordenada $x$ del vértice):</label>
+              <input type="number" step="any" id="p2-h" placeholder="h" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Valor de $k$ (coordenada $y$ del vértice):</label>
+              <input type="number" step="any" id="p2-k" placeholder="k" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>La parábola abre hacia:</label>
+              <select id="p2-dir">
+                <option value="">-- Seleccione --</option>
+                <option value="arriba">Hacia arriba (tiene un mínimo)</option>
+                <option value="abajo">Hacia abajo (tiene un máximo)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">ii. (6 puntos) Determine los elementos para el bosquejo de la parábola:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Eje de simetría: $x =$</label>
+              <input type="number" step="any" id="p2-axis" placeholder="Valor de x" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Intercepto en $x$ menor ($x_1$):</label>
+              <input type="number" step="any" id="p2-x1" placeholder="x menor" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Intercepto en $x$ mayor ($x_2$):</label>
+              <input type="number" step="any" id="p2-x2" placeholder="x mayor" oninput="drawP2Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>Intercepto en $y$ $(0, y_0) \Rightarrow y_0 =$</label>
+              <input type="number" step="any" id="p2-y0" placeholder="f(0)" oninput="drawP2Canvas()" />
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="canvasP2" class="coord-plane" width="380" height="380"></canvas>
+            <div class="canvas-caption">Plano coordenado: se muestra el vértice, eje de simetría e interceptos que ingreses.</div>
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen2(true)">Verificar Problema 2</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-2')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-2"></div>
+        <div class="solution-box" id="sol-open-2">
+          <strong>Solución paso a paso:</strong><br/>
+          i. Completando el cuadrado: $f(x) = 2(x^2 - 4x) + 6 = 2(x^2 - 4x + 4 - 4) + 6 = 2(x - 2)^2 - 8 + 6 = 2(x - 2)^2 - 2$.<br/>
+          Por lo tanto: $a = 2$, $h = 2$, $k = -2$. El vértice es $(2, -2)$ y como $a = 2 > 0$, abre <strong>hacia arriba</strong>.<br/>
+          ii. Eje de simetría: $x = 2$.<br/>
+          Intercepto en $y$: $f(0) = 6 \Rightarrow (0, 6)$.<br/>
+          Interceptos en $x$: $2x^2 - 8x + 6 = 0 \Rightarrow 2(x - 1)(x - 3) = 0 \Rightarrow x = 1$ y $x = 3$, es decir $(1, 0)$ y $(3, 0)$.
+        </div>
+      </div>
+
+      <!-- PROBLEMA 3 -->
+      <div class="q-block" id="open-block-3">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(3) [Sec. 2.4]</span> Sean $z = 3 - 2i$ y $w = 1 + 4i$. Realice las siguientes operaciones y exprese su respuesta en la forma estándar $a + bi$.
+          </div>
+          <span class="q-pts">8 puntos</span>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">i. (4 puntos) $3z - 2w = a + bi$</div>
+          <div class="math-input-row">
+            <label>Parte real $a =$</label>
+            <input type="text" id="p3-i-a" class="math-input short" placeholder="Ej: 7" />
+            <label>Parte imaginaria $b =$</label>
+            <input type="text" id="p3-i-b" class="math-input short" placeholder="Ej: -14" />
+            <span style="color:var(--muted); font-size:0.88rem;">(de modo que el resultado es $a + bi$)</span>
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">ii. (4 puntos) $\dfrac{z}{w} = a + bi$ <span style="font-weight:normal; font-size:0.86rem; color:var(--muted);">(Puede escribir fracciones como <code>-5/17</code>)</span></div>
+          <div class="math-input-row">
+            <label>Parte real $a =$</label>
+            <input type="text" id="p3-ii-a" class="math-input short" placeholder="Ej: -5/17" />
+            <label>Parte imaginaria $b =$</label>
+            <input type="text" id="p3-ii-b" class="math-input short" placeholder="Ej: -14/17" />
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen3(true)">Verificar Problema 3</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-3')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-3"></div>
+        <div class="solution-box" id="sol-open-3">
+          <strong>Solución paso a paso:</strong><br/>
+          i. $3z - 2w = 3(3 - 2i) - 2(1 + 4i) = (9 - 6i) - (2 + 8i) = (9 - 2) + (-6 - 8)i = 7 - 14i$. ($a = 7,\; b = -14$).<br/>
+          ii. Multiplicando por el conjugado de $w = 1 + 4i$, que es $\overline{w} = 1 - 4i$:<br/>
+          $$\frac{3 - 2i}{1 + 4i}\cdot\frac{1 - 4i}{1 - 4i} = \frac{3 - 12i - 2i + 8i^2}{1^2 + 4^2} = \frac{3 - 14i - 8}{17} = \frac{-5 - 14i}{17} = -\frac{5}{17} - \frac{14}{17}i$$
+          Por tanto $a = -\dfrac{5}{17}$ y $b = -\dfrac{14}{17}$.
+        </div>
+      </div>
+
+      <!-- PROBLEMA 4 -->
+      <div class="q-block" id="open-block-4">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(4) [Sec. 3.1 y 3.2]</span> Considere la función polinómica:
+            <div style="text-align:center; margin: 0.4rem 0; font-size: 1.08rem;">
+              $$P(x) = -x(x + 2)^2(x - 2)$$
+            </div>
+          </div>
+          <span class="q-pts">14 puntos</span>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">i. (3 puntos) Término líder, grado y comportamiento en los extremos:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Término líder:</label>
+              <input type="text" id="p4-lead" placeholder="Ej: -x^4" />
+            </div>
+            <div class="field-group">
+              <label>Grado de $P(x)$:</label>
+              <input type="number" id="p4-deg" placeholder="Grado" />
+            </div>
+            <div class="field-group">
+              <label>Comportamiento en los extremos:</label>
+              <select id="p4-end">
+                <option value="">-- Seleccione --</option>
+                <option value="down-down">y → -∞ cuando x → -∞, y y → -∞ cuando x → +∞</option>
+                <option value="up-up">y → +∞ cuando x → -∞, y y → +∞ cuando x → +∞</option>
+                <option value="up-down">y → +∞ cuando x → -∞, y y → -∞ cuando x → +∞</option>
+                <option value="down-up">y → -∞ cuando x → -∞, y y → +∞ cuando x → +∞</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">ii. (3 puntos) Interceptos en $x$, multiplicidades y comportamiento en cada cero:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>En el cero $x = -2$:</label>
+              <select id="p4-z1">
+                <option value="">-- Seleccione --</option>
+                <option value="m2-toca">Multiplicidad 2 (toca el eje x y no cruza)</option>
+                <option value="m2-cruza">Multiplicidad 2 (cruza el eje x)</option>
+                <option value="m1-cruza">Multiplicidad 1 (cruza el eje x)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>En el cero $x = 0$:</label>
+              <select id="p4-z2">
+                <option value="">-- Seleccione --</option>
+                <option value="m1-cruza">Multiplicidad 1 (cruza el eje x)</option>
+                <option value="m1-toca">Multiplicidad 1 (toca el eje x y no cruza)</option>
+                <option value="m2-toca">Multiplicidad 2 (toca el eje x)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>En el cero $x = 2$:</label>
+              <select id="p4-z3">
+                <option value="">-- Seleccione --</option>
+                <option value="m1-cruza">Multiplicidad 1 (cruza el eje x)</option>
+                <option value="m1-toca">Multiplicidad 1 (toca el eje x y no cruza)</option>
+                <option value="m2-toca">Multiplicidad 2 (toca el eje x)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">iii. (2 puntos) Mayor número posible de puntos de retorno (máximos y mínimos locales):</div>
+          <div class="math-input-row">
+            <label>Máximo número de puntos de retorno ($n - 1$):</label>
+            <input type="number" id="p4-turns" class="math-input short" placeholder="Ej: 3" />
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">iv. (6 puntos) Para confirmar el bosquejo de $P(x) = -x(x+2)^2(x-2)$, evalúe en dos puntos de prueba entre los ceros:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>En $x = -1 \Rightarrow P(-1) =$</label>
+              <input type="number" step="any" id="p4-eval1" placeholder="P(-1)" oninput="drawP4Canvas()" />
+            </div>
+            <div class="field-group">
+              <label>En $x = 1 \Rightarrow P(1) =$</label>
+              <input type="number" step="any" id="p4-eval2" placeholder="P(1)" oninput="drawP4Canvas()" />
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="canvasP4" class="coord-plane" width="380" height="380"></canvas>
+            <div class="canvas-caption">Bosquejo de $P(x) = -x(x+2)^2(x-2)$ (nota que en $x=1$, $P(1)=9$).</div>
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen4(true)">Verificar Problema 4</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-4')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-4"></div>
+        <div class="solution-box" id="sol-open-4">
+          <strong>Solución paso a paso:</strong><br/>
+          i. Término líder: $(-x)(x^2)(x) = -x^4$. Grado: $n = 4$ (par) y coeficiente líder $a_4 = -1 < 0$. Por tanto, $P(x) \to -\infty$ cuando $x \to -\infty$ y $P(x) \to -\infty$ cuando $x \to \infty$ (ambos extremos caen hacia abajo).<br/>
+          ii. Ceros: $x = -2$ (multiplicidad $2$, par $\Rightarrow$ toca el eje $x$ sin cruzar); $x = 0$ (multiplicidad $1$, impar $\Rightarrow$ cruza el eje $x$); $x = 2$ (multiplicidad $1$, impar $\Rightarrow$ cruza el eje $x$).<br/>
+          iii. Como el grado es $4$, tiene a lo sumo $4 - 1 = 3$ puntos de retorno.<br/>
+          iv. Puntos de prueba: $P(-1) = -(-1)(1)^2(-3) = -3$ y $P(1) = -(1)(3)^2(-1) = 9$.
+        </div>
+      </div>
+
+      <!-- PROBLEMA 5 -->
+      <div class="q-block" id="open-block-5">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(5) [Sec. 3.3]</span> Use <strong>división larga</strong> de polinomios para encontrar el cociente $Q(x)$ y el residuo $R(x)$ de:
+            <div style="text-align:center; margin: 0.4rem 0; font-size: 1.08rem;">
+              $$\frac{2x^4 - 3x^3 + x^2 - 5}{x^2 + 2}$$
+            </div>
+          </div>
+          <span class="q-pts">6 puntos</span>
+        </div>
+
+        <div class="grid-inputs">
+          <div class="field-group">
+            <label>Cociente $Q(x) =$</label>
+            <input type="text" id="p5-q" class="math-input" placeholder="Ej: 2x^2 - 3x - 3" />
+          </div>
+          <div class="field-group">
+            <label>Residuo $R(x) =$</label>
+            <input type="text" id="p5-r" class="math-input" placeholder="Ej: 6x + 1" />
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen5(true)">Verificar Problema 5</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-5')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-5"></div>
+        <div class="solution-box" id="sol-open-5">
+          <strong>Solución paso a paso:</strong><br/>
+          Al dividir $2x^4 - 3x^3 + x^2 + 0x - 5$ entre $x^2 + 2$:<br/>
+          1) $\dfrac{2x^4}{x^2} = 2x^2$. Restamos $2x^2(x^2 + 2) = 2x^4 + 4x^2$, quedando $-3x^3 - 3x^2 + 0x - 5$.<br/>
+          2) $\dfrac{-3x^3}{x^2} = -3x$. Restamos $-3x(x^2 + 2) = -3x^3 - 6x$, quedando $-3x^2 + 6x - 5$.<br/>
+          3) $\dfrac{-3x^2}{x^2} = -3$. Restamos $-3(x^2 + 2) = -3x^2 - 6$, quedando de residuo $6x + 1$.<br/>
+          <strong>Cociente:</strong> $Q(x) = 2x^2 - 3x - 3$, &nbsp; <strong>Residuo:</strong> $R(x) = 6x + 1$.
+        </div>
+      </div>
+
+      <!-- PROBLEMA 6 -->
+      <div class="q-block" id="open-block-6">
+        <div class="q-top">
+          <div>
+            <span class="q-num">(6) [Sec. 3.3]</span> Considere la función polinómica:
+            <div style="text-align:center; margin: 0.4rem 0; font-size: 1.08rem;">
+              $$f(x) = x^3 - 4x^2 + x + 6$$
+            </div>
+          </div>
+          <span class="q-pts">8 puntos</span>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">i. (5 puntos) Use <strong>división sintética</strong> para hallar el cociente $Q(x)$ y el residuo $R$ cuando $f(x)$ se divide por $x - 4$:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Cociente $Q(x) =$</label>
+              <input type="text" id="p6-q" class="math-input" placeholder="Ej: x^2 + 1" />
+            </div>
+            <div class="field-group">
+              <label>Residuo $R =$</label>
+              <input type="number" step="any" id="p6-r" class="math-input short" placeholder="Residuo" />
+            </div>
+          </div>
+        </div>
+
+        <div class="subq">
+          <div class="subq-title">ii. (3 puntos) ¿Es $x + 1$ un factor del polinomio $f(x)$? Justifique con el residuo de la división sintética:</div>
+          <div class="grid-inputs">
+            <div class="field-group">
+              <label>Residuo al dividir $f(x)$ entre $x + 1$ ($c = -1$):</label>
+              <input type="number" step="any" id="p6-r2" placeholder="f(-1)" />
+            </div>
+            <div class="field-group">
+              <label>¿Es $x + 1$ un factor de $f(x)$?</label>
+              <select id="p6-factor">
+                <option value="">-- Seleccione --</option>
+                <option value="si">Sí, porque el residuo de la división sintética es 0</option>
+                <option value="no">No, porque el residuo es distinto de 0</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <button class="btn btn-check-item" onclick="gradeOpen6(true)">Verificar Problema 6</button>
+          <button class="btn btn-check-item" onclick="toggleSol('sol-open-6')">Ver solución</button>
+        </div>
+        <div class="feedback-box" id="fb-open-6"></div>
+        <div class="solution-box" id="sol-open-6">
+          <strong>Solución paso a paso:</strong><br/>
+          i. Con $c = 4$ y coeficientes $1,\; -4,\; 1,\; 6$:<br/>
+          Bajamos $1$; $1\cdot 4 = 4 \Rightarrow -4 + 4 = 0$; $0\cdot 4 = 0 \Rightarrow 1 + 0 = 1$; $1\cdot 4 = 4 \Rightarrow 6 + 4 = 10$.<br/>
+          <strong>Cociente:</strong> $Q(x) = x^2 + 1$, &nbsp; <strong>Residuo:</strong> $R = 10$.<br/>
+          ii. Con $c = -1$ y coeficientes $1,\; -4,\; 1,\; 6$:<br/>
+          Bajamos $1$; $1(-1) = -1 \Rightarrow -4 - 1 = -5$; $(-5)(-1) = 5 \Rightarrow 1 + 5 = 6$; $6(-1) = -6 \Rightarrow 6 - 6 = 0$.<br/>
+          Como el residuo es $R = 0$, por el Teorema del Factor <strong>$x + 1$ sí es un factor</strong> de $f(x)$.
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // ==================== DATOS PARTE I (ESCOGE) ====================
+    const mcQuestions = [
+      {
+        id: 1,
+        section: "Sec. 2.1",
+        prompt: "La gráfica de $h(x) = |x + 5| - 3$ se obtiene al trasladar la gráfica de $f(x) = |x|$:",
+        options: {
+          A: "$5$ unidades a la derecha y $3$ hacia abajo.",
+          B: "$5$ unidades a la izquierda y $3$ hacia abajo.",
+          C: "$5$ unidades a la izquierda y $3$ hacia arriba.",
+          D: "$5$ unidades a la derecha y $3$ hacia arriba."
+        },
+        ans: "B",
+        explanation: "En $f(x+5)-3$, sumar $5$ dentro del argumento traslada $5$ unidades a la izquierda, y restar $3$ fuera traslada $3$ unidades hacia abajo."
+      },
+      {
+        id: 2,
+        section: "Sec. 2.1 y 2.2",
+        prompt: "Si el punto $(4, -3)$ pertenece a la gráfica de $f(x)$, ¿dónde estará localizado este punto si $f(x)$ se refleja horizontalmente (sobre el eje $y$) y se estira verticalmente por un factor de $2$?",
+        options: {
+          A: "$(-4, -6)$",
+          B: "$(4, 6)$",
+          C: "$(-8, -3)$",
+          D: "$(-4, 6)$"
+        },
+        ans: "A",
+        explanation: "Al reflejar sobre el eje $y$, $(x,y) \\to (-x,y)$, dando $(-4, -3)$. Al estirar verticalmente por factor de $2$, $(x,y) \\to (x, 2y)$, dando $(-4, -6)$."
+      },
+      {
+        id: 3,
+        section: "Sec. 2.2",
+        prompt: "Si $y = f(x)$ es una función, entonces un estiramiento horizontal por un factor de $3$ corresponde a:",
+        options: {
+          A: "$y = 3f(x)$",
+          B: "$y = f(3x)$",
+          C: "$y = f\\!\\left(\\dfrac{1}{3}x\\right)$",
+          D: "$y = \\dfrac{1}{3}f(x)$"
+        },
+        ans: "C",
+        explanation: "Un estiramiento horizontal por un factor $c > 1$ se representa como $y = f\\!\\left(\\frac{1}{c}x\\right)$, por lo que con $c = 3$ es $y = f\\!\\left(\\frac{1}{3}x\\right)$."
+      },
+      {
+        id: 4,
+        section: "Sec. 2.3",
+        prompt: "El rango de la función cuadrática $f(x) = -\\dfrac{1}{2}(x - 4)^2 + 7$ es:",
+        options: {
+          A: "$[7, \\infty)$",
+          B: "$(-\\infty, 7]$",
+          C: "$(-\\infty, 4]$",
+          D: "$[-7, \\infty)$"
+        },
+        ans: "B",
+        explanation: "El vértice es $(4, 7)$ y como $a = -\\frac{1}{2} < 0$, la parábola abre hacia abajo; su valor máximo es $7$, así que el rango es $(-\\infty, 7]$."
+      },
+      {
+        id: 5,
+        section: "Sec. 2.3",
+        prompt: "La ecuación cuadrática $3x^2 - 2x + 5 = 0$ tiene:",
+        options: {
+          A: "$2$ soluciones reales distintas.",
+          B: "$1$ solución real de multiplicidad $2$.",
+          C: "$2$ soluciones complejas conjugadas.",
+          D: "Una solución real y una compleja."
+        },
+        ans: "C",
+        explanation: "El discriminante es $\\Delta = b^2 - 4ac = (-2)^2 - 4(3)(5) = 4 - 60 = -56 < 0$. Por tanto tiene $2$ soluciones complejas conjugadas."
+      },
+      {
+        id: 6,
+        section: "Sec. 2.4",
+        prompt: "Al simplificar $3i^{2026} - 2i^{2027}$ se obtiene:",
+        options: {
+          A: "$-3 + 2i$",
+          B: "$-3 - 2i$",
+          C: "$3 + 2i$",
+          D: "$3 - 2i$"
+        },
+        ans: "A",
+        explanation: "$2026 = 4(506) + 2 \\Rightarrow i^{2026} = i^2 = -1$, y $2027 = 4(506) + 3 \\Rightarrow i^{2027} = i^3 = -i$. Entonces $3(-1) - 2(-i) = -3 + 2i$."
+      },
+      {
+        id: 7,
+        section: "Sec. 2.4",
+        prompt: "El producto de $4 - 7i$ y su conjugado es igual a:",
+        options: {
+          A: "$-33$",
+          B: "$65$",
+          C: "$16 - 49i$",
+          D: "$11$"
+        },
+        ans: "B",
+        explanation: "$(4 - 7i)(4 + 7i) = 4^2 + (-7)^2 = 16 + 49 = 65$."
+      },
+      {
+        id: 8,
+        section: "Sec. 3.1",
+        prompt: "¿Cuál de las siguientes expresiones representa una función polinómica?",
+        options: {
+          A: "$p(x) = 4x^3 - 2x^{-1} + 7$",
+          B: "$p(x) = \\sqrt{5}\\,x^4 - \\dfrac{2}{3}x^2 + 9$",
+          C: "$p(x) = x^5 + 3\\sqrt{x} - 1$",
+          D: "$p(x) = \\dfrac{x^2 + 1}{x - 3}$"
+        },
+        ans: "B",
+        explanation: "En una función polinómica todos los exponentes de $x$ deben ser enteros no negativos ($0, 1, 2, \\dots$). Los coeficientes sí pueden ser radicales o fracciones como $\\sqrt{5}$ y $-\\frac{2}{3}$."
+      },
+      {
+        id: 9,
+        section: "Sec. 3.2",
+        prompt: "Si $f$ es un polinomio y $x = -3$ es un cero de $f$ de multiplicidad $3$, entonces la gráfica de $f$:",
+        options: {
+          A: "Toca, pero no cruza, el eje $x$ en $x = -3$.",
+          B: "Cruza el eje $x$ en $x = -3$.",
+          C: "Ni toca ni cruza el eje $x$.",
+          D: "Tiene un intercepto en $y$ en $(0, -3)$."
+        },
+        ans: "B",
+        explanation: "Como la multiplicidad $3$ es impar, la gráfica cruza el eje $x$ en $x = -3$."
+      },
+      {
+        id: 10,
+        section: "Sec. 3.3",
+        prompt: "Si $(x + 4)$ es un factor del polinomio $P(x)$, entonces se cumple necesariamente que:",
+        options: {
+          A: "$P(4) = 0$.",
+          B: "El residuo al dividir $P(x)$ entre $(x + 4)$ es $0$.",
+          C: "$x = 4$ es un cero de $P(x)$.",
+          D: "Ninguna de las anteriores."
+        },
+        ans: "B",
+        explanation: "Por el Teorema del Factor, $(x + 4) = (x - (-4))$ es factor de $P(x)$ si y solo si $P(-4) = 0$, es decir, el residuo al dividir $P(x)$ entre $(x + 4)$ es cero."
+      }
+    ];
+
+    // ==================== DATOS PARTE II (LLENABLANCOS) ====================
+    const fibQuestions = [
+      {
+        id: 1,
+        section: "Sec. 2.1",
+        prompt: "Al trasladar la función $f(x) = \\sqrt[3]{x}$ cinco unidades hacia la derecha y tres unidades hacia abajo, la función transformada es:",
+        placeholder: "Ej: cbrt(x - 5) - 3",
+        testPoints: [5, 6, 13, -3],
+        targetFn: (x) => Math.cbrt(x - 5) - 3,
+        latexAns: "\\sqrt[3]{x - 5} - 3",
+        explanation: "Trasladar $5$ unidades a la derecha reemplaza $x$ por $(x - 5)$, y $3$ unidades hacia abajo resta $3$ afuera: $g(x) = \\sqrt[3]{x - 5} - 3$."
+      },
+      {
+        id: 2,
+        section: "Sec. 2.1",
+        prompt: "Si la función $f(x) = x^2$ se refleja verticalmente (sobre el eje $x$) y luego se traslada $6$ unidades hacia arriba, la función transformada es:",
+        placeholder: "Ej: -x^2 + 6",
+        testPoints: [-3, -1, 0, 2, 4],
+        targetFn: (x) => -(x * x) + 6,
+        latexAns: "-x^2 + 6",
+        explanation: "Reflejar sobre el eje $x$ multiplica la función por $-1$ ($-x^2$), y trasladar $6$ unidades hacia arriba suma $6$: $g(x) = -x^2 + 6$."
+      },
+      {
+        id: 3,
+        section: "Sec. 2.1 y 2.2",
+        prompt: "Al aplicar un estiramiento vertical por un factor de $4$ a la función $f(x) = |x|$ y luego trasladarla $2$ unidades hacia la izquierda, la función transformada es:",
+        placeholder: "Ej: 4*abs(x + 2)  o  4|x + 2|",
+        testPoints: [-5, -2, 0, 3],
+        targetFn: (x) => 4 * Math.abs(x + 2),
+        latexAns: "4|x + 2|",
+        explanation: "Estirar verticalmente por factor de $4$ da $4|x|$, y trasladar $2$ unidades a la izquierda reemplaza $x$ por $x + 2$: $g(x) = 4|x + 2|$."
+      },
+      {
+        id: 4,
+        section: "Sec. 2.1 y 2.2",
+        prompt: "Si la función $f(x) = \\sqrt{x}$ se encoge verticalmente por un factor de $\\dfrac{1}{3}$ y se refleja sobre el eje $y$, la función transformada es:",
+        placeholder: "Ej: (1/3)*sqrt(-x)",
+        testPoints: [-9, -4, -1, 0],
+        targetFn: (x) => (1 / 3) * Math.sqrt(-x),
+        latexAns: "\\dfrac{1}{3}\\sqrt{-x}",
+        explanation: "Encoger verticalmente por $\\frac{1}{3}$ multiplica afuera por $\\frac{1}{3}$, y reflejar sobre el eje $y$ reemplaza $x$ por $-x$: $g(x) = \\frac{1}{3}\\sqrt{-x}$."
+      }
+    ];
+
+    // ==================== RENDERIZADO INICIAL ====================
+    function renderMC() {
+      const container = document.getElementById("mcContainer");
+      container.innerHTML = mcQuestions.map(q => `
+        <div class="q-block" id="mc-block-${q.id}">
+          <div class="q-top">
+            <div><span class="q-num">(${q.id}) [${q.section}]</span> ${q.prompt}</div>
+            <span class="q-pts">3 puntos</span>
+          </div>
+          <div class="options-grid">
+            ${Object.entries(q.options).map(([letter, text]) => `
+              <label class="opt-label">
+                <input type="radio" name="mc-${q.id}" value="${letter}" onchange="updateMCTable(${q.id}, '${letter}')" />
+                <span><strong>${letter}.</strong> ${text}</span>
+              </label>
+            `).join("")}
+          </div>
+          <div class="q-footer">
+            <button class="btn btn-check-item" onclick="gradeSingleMC(${q.id}, true)">Verificar</button>
+            <button class="btn btn-check-item" onclick="toggleSol('sol-mc-${q.id}')">Ver explicación</button>
+          </div>
+          <div class="feedback-box" id="fb-mc-${q.id}"></div>
+          <div class="solution-box" id="sol-mc-${q.id}">
+            <strong>Respuesta correcta: ${q.ans}.</strong> ${q.explanation}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderFIB() {
+      const container = document.getElementById("fibContainer");
+      container.innerHTML = fibQuestions.map(q => `
+        <div class="q-block" id="fib-block-${q.id}">
+          <div class="q-top">
+            <div><span class="q-num">(${q.id}) [${q.section}]</span> ${q.prompt}</div>
+            <span class="q-pts">3 puntos</span>
+          </div>
+          <div class="math-input-row">
+            <label><strong>$g(x) =$</strong></label>
+            <input type="text" id="fib-in-${q.id}" class="math-input" placeholder="${q.placeholder}" />
+          </div>
+          <div class="helper-chips">
+            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'sqrt()')">√ (sqrt)</button>
+            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'cbrt()')">∛ (cbrt)</button>
+            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', 'abs()')">|x| (abs)</button>
+            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', '^2')">x²</button>
+            <button type="button" class="chip-btn" onclick="insertToken('fib-in-${q.id}', '(1/3)')">1/3</button>
+          </div>
+          <div class="q-footer">
+            <button class="btn btn-check-item" onclick="gradeSingleFIB(${q.id}, true)">Verificar</button>
+            <button class="btn btn-check-item" onclick="toggleSol('sol-fib-${q.id}')">Ver solución</button>
+          </div>
+          <div class="feedback-box" id="fb-fib-${q.id}"></div>
+          <div class="solution-box" id="sol-fib-${q.id}">
+            <strong>Respuesta:</strong> $g(x) = ${q.latexAns}$.<br/>${q.explanation}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function insertToken(inputId, token) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      const start = el.selectionStart || el.value.length;
+      const end = el.selectionEnd || el.value.length;
+      const val = el.value;
+      el.value = val.slice(0, start) + token + val.slice(end);
+      el.focus();
+      const cursor = token.endsWith("()") ? start + token.length - 1 : start + token.length;
+      el.setSelectionRange(cursor, cursor);
+    }
+
+    function updateMCTable(id, letter) {
+      const cell = document.getElementById(`tbl-mc-${id}`);
+      if (cell) cell.textContent = letter;
+    }
+
+    function toggleSol(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle("show");
+    }
+
+    function toggleAllSolutions() {
+      const all = document.querySelectorAll(".solution-box");
+      const anyHidden = Array.from(all).some(el => !el.classList.contains("show"));
+      all.forEach(el => {
+        if (anyHidden) el.classList.add("show");
+        else el.classList.remove("show");
+      });
+    }
+
+    // ==================== EVALUADOR MATEMÁTICO SEGURO ====================
+    function evalMathExpr(rawExpr, xVal) {
+      if (!rawExpr || !rawExpr.trim()) return NaN;
+      let s = rawExpr.trim().toLowerCase();
+
+      // Quitar "g(x) =" o "f(x) =" si el estudiante lo escribió
+      s = s.replace(/^[gfqp]\s*\(\s*x\s*\)\s*=/, "").trim();
+
+      // Reemplazar barras de valor absoluto |...| por abs(...)
+      s = s.replace(/\|([^|]+)\|/g, "abs($1)");
+
+      // Símbolos Unicode comunes
+      s = s.replace(/∛\s*\(([^)]+)\)/g, "cbrt($1)");
+      s = s.replace(/√\s*\(([^)]+)\)/g, "sqrt($1)");
+      s = s.replace(/raiz3\s*\(/g, "cbrt(");
+      s = s.replace(/raiz\s*\(/g, "sqrt(");
+
+      // Potencias: cuidar -x^2 -> -(x^2) según convención algebraica estándar
+      s = s.replace(/\^/g, "**");
+      // En JS -x**2 lanza SyntaxError; convertimos -x**n en -(x**n)
+      s = s.replace(/-\s*x\s*\*\*\s*(\d+)/g, "-(x**$1)");
+
+      // Multiplicación implícita común: 2x, 4abs, (1/3)sqrt, )x, )(
+      s = s.replace(/(\d)(x|abs|sqrt|cbrt|\()/g, "$1*$2");
+      s = s.replace(/\)(x|\d|abs|sqrt|cbrt|\()/g, ")*$1");
+      s = s.replace(/(x)(\()/g, "$1*$2");
+
+      // Funciones Math
+      s = s.replace(/\bcbrt\b/g, "Math.cbrt");
+      s = s.replace(/\bsqrt\b/g, "Math.sqrt");
+      s = s.replace(/\babs\b/g, "Math.abs");
+
+      try {
+        const fn = new Function("x", `"use strict"; return (${s});`);
+        return fn(xVal);
+      } catch (e) {
+        return NaN;
+      }
+    }
+
+    function parseFractionOrNumber(str) {
+      if (str === null || str === undefined) return NaN;
+      const clean = String(str).trim().replace(/\s+/g, "");
+      if (!clean) return NaN;
+      if (/^[+-]?\d+\/[+-]?\d+$/.test(clean)) {
+        const parts = clean.split("/");
+        const num = parseFloat(parts[0]);
+        const den = parseFloat(parts[1]);
+        return den !== 0 ? num / den : NaN;
+      }
+      return Number(clean);
+    }
+
+    function showFeedback(elId, blockId, status, msg) {
+      const fb = document.getElementById(elId);
+      const block = document.getElementById(blockId);
+      if (fb) {
+        fb.className = "feedback-box show " + (status === "correct" ? "ok" : status === "partial" ? "warn" : "err");
+        fb.innerHTML = msg;
+      }
+      if (block) {
+        block.classList.remove("correct", "incorrect", "partial");
+        block.classList.add(status);
+      }
+    }
+
+    // ==================== CORRECCIÓN PARTE I ====================
+    function gradeSingleMC(id, showMsg = true) {
+      const q = mcQuestions.find(item => item.id === id);
+      const sel = document.querySelector(`input[name="mc-${id}"]:checked`);
+      const val = sel ? sel.value : null;
+
+      if (!val) {
+        if (showMsg) {
+          showFeedback(`fb-mc-${id}`, `mc-block-${id}`, "incorrect", "⚠️ No has seleccionado ninguna alternativa. (0 / 3 pts)");
+        }
+        return 0;
+      }
+
+      if (val === q.ans) {
+        if (showMsg) {
+          showFeedback(`fb-mc-${id}`, `mc-block-${id}`, "correct", `✓ ¡Correcto! Alternativa ${q.ans}. (3 / 3 pts)`);
+        }
+        return 3;
+      } else {
+        if (showMsg) {
+          showFeedback(`fb-mc-${id}`, `mc-block-${id}`, "incorrect", `✗ Incorrecto. Seleccionaste ${val}, pero la respuesta correcta es ${q.ans}. (0 / 3 pts)`);
+        }
+        return 0;
+      }
+    }
+
+    // ==================== CORRECCIÓN PARTE II ====================
+    function gradeSingleFIB(id, showMsg = true) {
+      const q = fibQuestions.find(item => item.id === id);
+      const raw = document.getElementById(`fib-in-${id}`).value;
+
+      if (!raw || !raw.trim()) {
+        if (showMsg) {
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", "⚠️ Escribe una expresión algebraica para verificar. (0 / 3 pts)");
+        }
+        return 0;
+      }
+
+      let allMatch = true;
+      for (const pt of q.testPoints) {
+        const expected = q.targetFn(pt);
+        const actual = evalMathExpr(raw, pt);
+        if (isNaN(actual) || Math.abs(expected - actual) > 1e-4) {
+          allMatch = false;
+          break;
+        }
+      }
+
+      if (allMatch) {
+        if (showMsg) {
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "correct", `✓ ¡Expresión equivalente correcta! (3 / 3 pts)`);
+        }
+        return 3;
+      } else {
+        if (showMsg) {
+          showFeedback(`fb-fib-${id}`, `fib-block-${id}`, "incorrect", `✗ La expresión no coincide con la transformación descrita. Pulsa "Ver solución" para revisar. (0 / 3 pts)`);
+        }
+        return 0;
+      }
+    }
+
+    // ==================== CORRECCIÓN PARTE III ====================
+    // Problema 1 (10 pts)
+    function gradeOpen1(showMsg = true) {
+      let pts = 0;
+      const th = document.getElementById("p1-trans-h").value;
+      const st = document.getElementById("p1-stretch").value;
+      const rf = document.getElementById("p1-refl").value;
+      const tv = document.getElementById("p1-trans-v").value;
+      const ing = document.getElementById("p1-in-g").value.replace(/\s+/g, "").toLowerCase();
+
+      if (th === "izq3") pts += 0.75;
+      if (st === "estV2") pts += 0.75;
+      if (rf === "ejeX") pts += 0.75;
+      if (tv === "arr4") pts += 0.75;
+
+      if (ing === "-2g(x+3)+4" || ing === "-2*g(x+3)+4" || ing === "4-2g(x+3)" || ing === "4-2*g(x+3)") {
+        pts += 1;
+      }
+
+      const y1 = parseFloat(document.getElementById("p1-pt1").value);
+      const y2 = parseFloat(document.getElementById("p1-pt2").value);
+      const y3 = parseFloat(document.getElementById("p1-pt3").value);
+      const y4 = parseFloat(document.getElementById("p1-pt4").value);
+
+      if (Math.abs(y1 - 4) < 1e-3) pts += 1.5;
+      if (Math.abs(y2 - 2) < 1e-3) pts += 1.5;
+      if (Math.abs(y3 - 0) < 1e-3) pts += 1.5;
+      if (Math.abs(y4 - (-2)) < 1e-3) pts += 1.5;
+
+      pts = Math.round(pts * 100) / 100;
+      drawP1Canvas(true);
+
+      if (showMsg) {
+        const status = pts === 10 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-1", "open-block-1", status, `Puntuación en Problema 1: <strong>${pts} / 10 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // Problema 2 (12 pts)
+    function gradeOpen2(showMsg = true) {
+      let pts = 0;
+      const a = parseFloat(document.getElementById("p2-a").value);
+      const h = parseFloat(document.getElementById("p2-h").value);
+      const k = parseFloat(document.getElementById("p2-k").value);
+      const dir = document.getElementById("p2-dir").value;
+
+      if (Math.abs(a - 2) < 1e-3) pts += 1.5;
+      if (Math.abs(h - 2) < 1e-3) pts += 1.5;
+      if (Math.abs(k - (-2)) < 1e-3) pts += 1.5;
+      if (dir === "arriba") pts += 1.5;
+
+      const axis = parseFloat(document.getElementById("p2-axis").value);
+      const x1 = parseFloat(document.getElementById("p2-x1").value);
+      const x2 = parseFloat(document.getElementById("p2-x2").value);
+      const y0 = parseFloat(document.getElementById("p2-y0").value);
+
+      if (Math.abs(axis - 2) < 1e-3) pts += 1.5;
+      const xs = [x1, x2].sort((u, v) => u - v);
+      if (Math.abs(xs[0] - 1) < 1e-3) pts += 1.5;
+      if (Math.abs(xs[1] - 3) < 1e-3) pts += 1.5;
+      if (Math.abs(y0 - 6) < 1e-3) pts += 1.5;
+
+      drawP2Canvas(true);
+
+      if (showMsg) {
+        const status = pts === 12 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-2", "open-block-2", status, `Puntuación en Problema 2: <strong>${pts} / 12 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // Problema 3 (8 pts)
+    function gradeOpen3(showMsg = true) {
+      let pts = 0;
+      const ia = parseFractionOrNumber(document.getElementById("p3-i-a").value);
+      const ib = parseFractionOrNumber(document.getElementById("p3-i-b").value);
+      const iia = parseFractionOrNumber(document.getElementById("p3-ii-a").value);
+      const iib = parseFractionOrNumber(document.getElementById("p3-ii-b").value);
+
+      if (Math.abs(ia - 7) < 1e-3) pts += 2;
+      if (Math.abs(ib - (-14)) < 1e-3) pts += 2;
+      if (Math.abs(iia - (-5 / 17)) < 1e-3) pts += 2;
+      if (Math.abs(iib - (-14 / 17)) < 1e-3) pts += 2;
+
+      if (showMsg) {
+        const status = pts === 8 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-3", "open-block-3", status, `Puntuación en Problema 3: <strong>${pts} / 8 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // Problema 4 (14 pts)
+    function gradeOpen4(showMsg = true) {
+      let pts = 0;
+      const lead = document.getElementById("p4-lead").value.replace(/\s+/g, "").toLowerCase();
+      const deg = parseInt(document.getElementById("p4-deg").value, 10);
+      const end = document.getElementById("p4-end").value;
+
+      if (lead === "-x^4" || lead === "-1x^4") pts += 1;
+      if (deg === 4) pts += 1;
+      if (end === "down-down") pts += 1;
+
+      if (document.getElementById("p4-z1").value === "m2-toca") pts += 1;
+      if (document.getElementById("p4-z2").value === "m1-cruza") pts += 1;
+      if (document.getElementById("p4-z3").value === "m1-cruza") pts += 1;
+
+      const turns = parseInt(document.getElementById("p4-turns").value, 10);
+      if (turns === 3) pts += 2;
+
+      const ev1 = parseFloat(document.getElementById("p4-eval1").value);
+      const ev2 = parseFloat(document.getElementById("p4-eval2").value);
+      if (Math.abs(ev1 - (-3)) < 1e-3) pts += 3;
+      if (Math.abs(ev2 - 9) < 1e-3) pts += 3;
+
+      drawP4Canvas(true);
+
+      if (showMsg) {
+        const status = pts === 14 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-4", "open-block-4", status, `Puntuación en Problema 4: <strong>${pts} / 14 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // Problema 5 (6 pts)
+    function gradeOpen5(showMsg = true) {
+      let pts = 0;
+      const qRaw = document.getElementById("p5-q").value;
+      const rRaw = document.getElementById("p5-r").value;
+
+      const testX = [-2, -1, 0, 1, 3];
+      const qOk = qRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (2 * x * x - 3 * x - 3)) < 1e-3);
+      const rOk = rRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(rRaw, x) - (6 * x + 1)) < 1e-3);
+
+      if (qOk) pts += 3;
+      if (rOk) pts += 3;
+
+      if (showMsg) {
+        const status = pts === 6 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-5", "open-block-5", status, `Puntuación en Problema 5: <strong>${pts} / 6 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // Problema 6 (8 pts)
+    function gradeOpen6(showMsg = true) {
+      let pts = 0;
+      const qRaw = document.getElementById("p6-q").value;
+      const r1 = parseFloat(document.getElementById("p6-r").value);
+      const r2 = parseFloat(document.getElementById("p6-r2").value);
+      const fac = document.getElementById("p6-factor").value;
+
+      const testX = [-2, 0, 1, 3];
+      const qOk = qRaw.trim() !== "" && testX.every(x => Math.abs(evalMathExpr(qRaw, x) - (x * x + 1)) < 1e-3);
+
+      if (qOk) pts += 3;
+      if (Math.abs(r1 - 10) < 1e-3) pts += 2;
+      if (Math.abs(r2 - 0) < 1e-3) pts += 1.5;
+      if (fac === "si") pts += 1.5;
+
+      if (showMsg) {
+        const status = pts === 8 ? "correct" : pts > 0 ? "partial" : "incorrect";
+        showFeedback("fb-open-6", "open-block-6", status, `Puntuación en Problema 6: <strong>${pts} / 8 puntos</strong>.`);
+      }
+      return pts;
+    }
+
+    // ==================== CALIFICACIÓN GENERAL ====================
+    function gradeAllExam() {
+      let p1Score = 0;
+      mcQuestions.forEach(q => { p1Score += gradeSingleMC(q.id, true); });
+
+      let p2Score = 0;
+      fibQuestions.forEach(q => { p2Score += gradeSingleFIB(q.id, true); });
+
+      let p3Score = 0;
+      p3Score += gradeOpen1(true);
+      p3Score += gradeOpen2(true);
+      p3Score += gradeOpen3(true);
+      p3Score += gradeOpen4(true);
+      p3Score += gradeOpen5(true);
+      p3Score += gradeOpen6(true);
+
+      p3Score = Math.round(p3Score * 100) / 100;
+      const total = Math.round((p1Score + p2Score + p3Score) * 100) / 100;
+
+      document.getElementById("liveScorePill").textContent = `Puntuación: ${total} / 100 pts`;
+      document.getElementById("statTotal").textContent = `${total} / 100`;
+      document.getElementById("statPart1").textContent = `${p1Score} / 30`;
+      document.getElementById("statPart2").textContent = `${p2Score} / 12`;
+      document.getElementById("statPart3").textContent = `${p3Score} / 58`;
+
+      const banner = document.getElementById("summaryBanner");
+      banner.classList.add("show");
+
+      const headline = document.getElementById("summaryHeadline");
+      const subtext = document.getElementById("summarySubtext");
+
+      if (total >= 90) {
+        headline.textContent = `¡Excelente trabajo! Obtuviste ${total} / 100 puntos (A)`;
+      } else if (total >= 80) {
+        headline.textContent = `¡Muy buen desempeño! Obtuviste ${total} / 100 puntos (B)`;
+      } else if (total >= 70) {
+        headline.textContent = `Examen aprobado: Obtuviste ${total} / 100 puntos (C)`;
+      } else {
+        headline.textContent = `Resultado: ${total} / 100 puntos — Revisa las soluciones paso a paso para practicar`;
+      }
+      subtext.textContent = "Revisa debajo cada ejercicio marcado en verde (correcto), amarillo (parcial) o rojo (a corregir).";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function resetExam() {
+      if (!confirm("¿Deseas borrar todas tus respuestas y reiniciar el examen?")) return;
+      document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => el.value = "");
+      document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+      for (let i = 1; i <= 10; i++) updateMCTable(i, "-");
+      document.querySelectorAll(".feedback-box, .solution-box").forEach(el => el.classList.remove("show"));
+      document.querySelectorAll(".q-block").forEach(el => el.classList.remove("correct", "incorrect", "partial"));
+      document.getElementById("summaryBanner").classList.remove("show");
+      document.getElementById("liveScorePill").textContent = "Puntuación: -- / 100 pts";
+      drawP1Canvas(false);
+      drawP2Canvas(false);
+      drawP4Canvas(false);
+    }
+
+    // ==================== PLANOS CARTESIANOS (CANVAS) ====================
+    function drawGrid(ctx, w, h, xMin, xMax, yMin, yMax) {
+      ctx.clearRect(0, 0, w, h);
+      const toX = x => ((x - xMin) / (xMax - xMin)) * w;
+      const toY = y => h - ((y - yMin) / (yMax - yMin)) * h;
+
+      // Cuadrícula
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 1;
+      for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+        ctx.beginPath();
+        ctx.moveTo(toX(x), 0);
+        ctx.lineTo(toX(x), h);
+        ctx.stroke();
+      }
+      for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, toY(y));
+        ctx.lineTo(w, toY(y));
+        ctx.stroke();
+      }
+
+      // Ejes
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(0, toY(0));
+      ctx.lineTo(w, toY(0));
+      ctx.moveTo(toX(0), 0);
+      ctx.lineTo(toX(0), h);
+      ctx.stroke();
+
+      // Etiquetas
+      ctx.fillStyle = "#475569";
+      ctx.font = "11px system-ui, sans-serif";
+      for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+        if (x === 0) continue;
+        ctx.fillText(x, toX(x) - 4, toY(0) + 13);
+      }
+      for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+        if (y === 0) continue;
+        ctx.fillText(y, toX(0) + 5, toY(y) + 4);
+      }
+
+      return { toX, toY };
+    }
+
+    function drawPoint(ctx, toX, toY, x, y, color = "#0b5d3b", label = "") {
+      if (isNaN(x) || isNaN(y)) return;
+      const px = toX(x);
+      const py = toY(y);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      if (label) {
+        ctx.font = "bold 11px system-ui, sans-serif";
+        ctx.fillText(label, px + 6, py - 6);
+      }
+    }
+
+    function drawP1Canvas(showCurve = false) {
+      const c = document.getElementById("canvasP1");
+      if (!c) return;
+      const ctx = c.getContext("2d");
+      const { toX, toY } = drawGrid(ctx, c.width, c.height, -6, 7, -6, 6);
+
+      if (showCurve) {
+        ctx.strokeStyle = "#0b5d3b";
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (let x = -3; x <= 7; x += 0.05) {
+          const y = -2 * Math.sqrt(x + 3) + 4;
+          if (x === -3) ctx.moveTo(toX(x), toY(y));
+          else ctx.lineTo(toX(x), toY(y));
+        }
+        ctx.stroke();
+      }
+
+      const xs = [-3, -2, 1, 6];
+      const ids = ["p1-pt1", "p1-pt2", "p1-pt3", "p1-pt4"];
+      ids.forEach((id, idx) => {
+        const y = parseFloat(document.getElementById(id).value);
+        if (!isNaN(y)) {
+          drawPoint(ctx, toX, toY, xs[idx], y, "#1d4ed8", `(${xs[idx]}, ${y})`);
+        }
+      });
+    }
+
+    function drawP2Canvas(showCurve = false) {
+      const c = document.getElementById("canvasP2");
+      if (!c) return;
+      const ctx = c.getContext("2d");
+      const { toX, toY } = drawGrid(ctx, c.width, c.height, -4, 6, -4, 8);
+
+      const axis = parseFloat(document.getElementById("p2-axis").value);
+      if (!isNaN(axis)) {
+        ctx.save();
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = "#dc2626";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(toX(axis), 0);
+        ctx.lineTo(toX(axis), c.height);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      if (showCurve) {
+        ctx.strokeStyle = "#0b5d3b";
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (let x = -1.5; x <= 5.5; x += 0.05) {
+          const y = 2 * x * x - 8 * x + 6;
+          if (x === -1.5) ctx.moveTo(toX(x), toY(y));
+          else ctx.lineTo(toX(x), toY(y));
+        }
+        ctx.stroke();
+      }
+
+      const h = parseFloat(document.getElementById("p2-h").value);
+      const k = parseFloat(document.getElementById("p2-k").value);
+      if (!isNaN(h) && !isNaN(k)) drawPoint(ctx, toX, toY, h, k, "#dc2626", `V(${h},${k})`);
+
+      const x1 = parseFloat(document.getElementById("p2-x1").value);
+      const x2 = parseFloat(document.getElementById("p2-x2").value);
+      const y0 = parseFloat(document.getElementById("p2-y0").value);
+      if (!isNaN(x1)) drawPoint(ctx, toX, toY, x1, 0, "#1d4ed8", `(${x1},0)`);
+      if (!isNaN(x2)) drawPoint(ctx, toX, toY, x2, 0, "#1d4ed8", `(${x2},0)`);
+      if (!isNaN(y0)) drawPoint(ctx, toX, toY, 0, y0, "#1d4ed8", `(0,${y0})`);
+    }
+
+    function drawP4Canvas(showCurve = false) {
+      const c = document.getElementById("canvasP4");
+      if (!c) return;
+      const ctx = c.getContext("2d");
+      const { toX, toY } = drawGrid(ctx, c.width, c.height, -4, 4, -8, 10);
+
+      // Siempre graficar los ceros en el eje x
+      drawPoint(ctx, toX, toY, -2, 0, "#0b5d3b", "(-2,0)");
+      drawPoint(ctx, toX, toY, 0, 0, "#0b5d3b", "(0,0)");
+      drawPoint(ctx, toX, toY, 2, 0, "#0b5d3b", "(2,0)");
+
+      const ev1 = parseFloat(document.getElementById("p4-eval1").value);
+      const ev2 = parseFloat(document.getElementById("p4-eval2").value);
+      if (!isNaN(ev1)) drawPoint(ctx, toX, toY, -1, ev1, "#1d4ed8", `(-1,${ev1})`);
+      if (!isNaN(ev2)) drawPoint(ctx, toX, toY, 1, ev2, "#1d4ed8", `(1,${ev2})`);
+
+      if (showCurve) {
+        ctx.strokeStyle = "#0b5d3b";
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (let x = -2.8; x <= 2.45; x += 0.03) {
+          const y = -x * Math.pow(x + 2, 2) * (x - 2);
+          if (x === -2.8) ctx.moveTo(toX(x), toY(y));
+          else ctx.lineTo(toX(x), toY(y));
+        }
+        ctx.stroke();
+      }
+    }
+
+    // Inicialización al cargar
+    window.addEventListener("DOMContentLoaded", () => {
+      renderMC();
+      renderFIB();
+      drawP1Canvas(false);
+      drawP2Canvas(false);
+      drawP4Canvas(false);
+
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ]
+        });
+      }
+    });
+  </script>
+</body>
+</html>
